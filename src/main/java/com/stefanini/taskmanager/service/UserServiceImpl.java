@@ -33,7 +33,7 @@ public class UserServiceImpl implements UserService {
         if (userList.size() == 0) {
             log.info("No users were created");
         } else {
-            userList.forEach(System.out::println);
+            userList.forEach(log::info);
         }
     }
 }

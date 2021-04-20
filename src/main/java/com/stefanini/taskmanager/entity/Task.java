@@ -10,7 +10,6 @@ public class Task implements Serializable {
     private Long id;
     private String title;
     private String description;
-    private Set<User> users = new HashSet<>();
 
     public Task() {
     }
@@ -42,14 +41,6 @@ public class Task implements Serializable {
 
     public void setDescription(String description) {
         this.description = description;
-    }
-
-    public Set<User> getUsers() {
-        return users;
-    }
-
-    public void setUsers(Set<User> users) {
-        this.users = users;
     }
 
     @Override

@@ -17,6 +17,8 @@
         <flyway.schemas>test</flyway.schemas>
         <flyway.url>jdbc:mysql://localhost:3306/test</flyway.url>
         <flyway.locations>filesystem:db/migration</flyway.locations>
+
+
     </properties>
 
     <dependencies>

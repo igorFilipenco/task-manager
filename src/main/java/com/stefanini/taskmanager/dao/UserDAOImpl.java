@@ -1,64 +1,148 @@
 package com.stefanini.taskmanager.dao;
 
-
 import com.stefanini.taskmanager.entity.User;
-import com.stefanini.taskmanager.utils.HibernateUtil;
+import com.stefanini.taskmanager.utils.DBConnectionManager;
 import org.apache.log4j.Logger;
-import org.hibernate.Session;
 
-import javax.persistence.Query;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
+
 
 public class UserDAOImpl implements UserDAO {
     private static final Logger log = Logger.getLogger(UserDAOImpl.class);
+    private static Connection connection = null;
+    private static PreparedStatement statement = null;
+    private static ResultSet resultSet = null;
 
     @Override
     public void createUser(User user) {
         String userName = user.getUserName();
-        Session session = HibernateUtil.getSessionFactory().openSession();
-        session.beginTransaction();
-        User existingUser = getUserByUserName(session, userName);
+        String firstName = user.getFirstName();
+        String lastName = user.getLastName();
+        User duplicateUser = getUserByUserName(userName);
 
-        if (existingUser == null) {
-            session.save(user);
-            session.getTransaction().commit();
-        } else {
-            log.error("Error: user with username " + user.getUserName() + " already exists");
+        try {
+            System.out.println(duplicateUser);
+            if(duplicateUser == null) {
+                String query = "INSERT INTO `user`(userName, firstName, lastName) VALUES(?,?,?)";
+                connection = DBConnectionManager.getConnection();
+                statement = connection.prepareStatement(query);
+                statement.setString(1, userName);
+                statement.setString(2, firstName);
+                statement.setString(3, lastName);
+                statement.executeUpdate();
+            } else {
+                log.info("Error: user with username " + user.getUserName() + " already exists");
+            }
+        } catch (SQLException e) {
+            log.error(e.getMessage());
+        } finally {
+            try {
+                connection.close();
+                statement.close();
+            } catch (SQLException e) {
+                log.error("ERROR: on closing resources");
+            }
         }
     }
 
     @Override
-    public User getUserByUserName(Session session, String userName) {
-        Query query = session.createQuery("From User U WHERE U.userName = :userName");
-        query.setParameter("userName", userName);
-        List<User> users = query.getResultList();
+    public User getUserByUserName(String userName) {
+        User user = null;
 
-        if (users.size() > 0) {
-            return users.get(0);
+        try {
+            String query = "SELECT * FROM `user` WHERE userName = ?";
+            log.info("Connecting to database");
+            connection = DBConnectionManager.getConnection();
+            statement = connection.prepareStatement(query);
+            statement.setString(1, userName);
+            resultSet = statement.executeQuery();
+
+            while(resultSet.next()) {
+                user.setId(resultSet.getLong("id"));
+                user.setUserName(resultSet.getString("userName"));
+                user.setFirstName(resultSet.getString("firstName"));
+                user.setLastName(resultSet.getString("lastName"));
+            }
+            //System.out.println(result);
+            log.info("INFO: found user with username" + userName);
+
+
+        } catch (SQLException e) {
+            log.error(e.getMessage());
+        } finally {
+            try {
+                connection.close();
+                statement.close();
+            } catch (SQLException e) {
+                log.error("ERROR: on closing resources");
+            }
         }
 
-        return null;
+        log.info("INFO: user with username" + userName + "does not exist");
+
+        return user;
     }
 
     @Override
     public List<User> getUsers() {
-        Session session = HibernateUtil.getSessionFactory().openSession();
-        Query query = session.createQuery("FROM User");
-        List<User> userList = query.getResultList();
+        String query = "SELECT * FROM user";
+        List<User> userList = new ArrayList<>();
+
+        try {
+            log.info("Connecting to database");
+            connection = DBConnectionManager.getConnection();
+            statement = connection.prepareStatement(query);
+            resultSet = statement.executeQuery();
+
+            while (resultSet.next()) {
+                long id = resultSet.getInt("id");
+                String userName = resultSet.getString("userName");
+                String firstName = resultSet.getString("firstName");
+                String lastName = resultSet.getString("lastName");
+
+                userList.add(new User(id, userName, firstName, lastName));
+            }
+
+
+        } catch (SQLException e) {
+            log.error(e.getMessage());
+        } finally {
+            try {
+                connection.close();
+                statement.close();
+                resultSet.close();
+            } catch (SQLException e) {
+                log.error("ERROR: on closing resources");
+            }
+        }
 
         return userList;
     }
 
     @Override
     public void deleteAllUsers() {
-        Session session = HibernateUtil.getSession();
+        String query = "DELETE FROM user";
 
-        if (session.getTransaction().isActive()) {
-            session.getTransaction().commit();
+        try {
+            log.info("Connecting to database");
+            connection = DBConnectionManager.getConnection();
+            statement = connection.prepareStatement(query);
+            statement.executeQuery();
+        } catch (SQLException e) {
+            log.error(e.getMessage());
+        } finally {
+            try {
+                connection.close();
+                statement.close();
+                resultSet.close();
+            } catch (SQLException e) {
+                log.error("ERROR: on closing resources");
+            }
         }
-
-        session.beginTransaction();
-        session.createQuery("delete from User").executeUpdate();
-        session.getTransaction().commit();
     }
 }

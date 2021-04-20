@@ -11,17 +11,25 @@ public class User implements Serializable {
     private String userName;
     private String firstName;
     private String lastName;
-    private List<Task> tasks;
 
     public User() {
-
     }
 
-    public User(String userName, String firstName, String lastName, List<Task> tasks) {
+    public User(Long id, String userName, String firstName, String lastName) {
+        this.id = id;
         this.userName = userName;
         this.firstName = firstName;
         this.lastName = lastName;
-        this.tasks = tasks;
+    }
+
+    public User(String userName, String firstName, String lastName) {
+        this.userName = userName;
+        this.firstName = firstName;
+        this.lastName = lastName;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public Long getId() {
@@ -52,24 +60,16 @@ public class User implements Serializable {
         this.lastName = lastName;
     }
 
-    public List<Task> getTasks() {
-        return tasks;
-    }
-
-    public void setTasks(List<Task> tasks) {
-        this.tasks = tasks;
-    }
-
     public void addTask(Task task) {
-        if (tasks == null) {
-            tasks = new ArrayList<>();
-        }
-
-        tasks.add(task);
+//        if (tasks == null) {
+//            tasks = new ArrayList<>();
+//        }
+//
+//        tasks.add(task);
     }
 
     public void completeTask(int index) {
-        tasks.remove(index);
+//        tasks.remove(index);
     }
 
     @Override
@@ -78,7 +78,6 @@ public class User implements Serializable {
                 "userName='" + userName + '\'' +
                 ", firstName='" + firstName + '\'' +
                 ", lastName='" + lastName + '\'' +
-                ", tasks=" + tasks +
                 '}';
     }
 }
