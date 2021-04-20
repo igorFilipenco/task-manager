@@ -1,17 +1,19 @@
 package com.stefanini.taskmanager.dao;
 
-
 import com.stefanini.taskmanager.entity.Task;
 import com.stefanini.taskmanager.entity.User;
 import com.stefanini.taskmanager.utils.HibernateUtil;
 import com.stefanini.taskmanager.utils.ParamsExtractor;
+import org.apache.log4j.Logger;
 import org.hibernate.Session;
 
 import javax.persistence.Query;
 import java.util.ArrayList;
 import java.util.List;
 
+
 public class TaskDAOImpl implements TaskDAO {
+    private static final Logger log = Logger.getLogger(TaskDAOImpl.class);
     private final UserDAO userRepository = new UserDAOImpl();
     private final Session repositorySession = HibernateUtil.getSession();
 
@@ -21,14 +23,14 @@ public class TaskDAOImpl implements TaskDAO {
         User user = userRepository.getUserByUserName(repositorySession, userName);
 
         if (user == null) {
-            System.out.println("Error: user with user name " + userName + " does not exist");
+            log.error("Error: user with user name " + userName + " does not exist");
         } else {
             user.addTask(task);
             repositorySession.save(user);
             repositorySession.save(task);
             repositorySession.getTransaction().commit();
 
-            System.out.println("Success: task with title " + task.getTitle() + " has been added to user " + user.getUserName());
+            log.info("Success: task with title " + task.getTitle() + " has been added to user " + user.getUserName());
         }
     }
 
@@ -40,7 +42,7 @@ public class TaskDAOImpl implements TaskDAO {
         List<Task> userTasks = new ArrayList<>();
 
         if (user == null) {
-            System.out.println("Error: user with username " + userName + " does not exist");
+            log.error("Error: user with user name " + userName + " does not exist");
         } else {
             userTasks = user.getTasks();
         }
@@ -76,16 +78,16 @@ public class TaskDAOImpl implements TaskDAO {
             }
 
             if (taskIndex < 0) {
-                System.out.println("Error: task with title " + taskTitle + " does not exist");
+                log.error("Error: task with title " + taskTitle + " does not exist");
             } else {
                 user.completeTask(taskIndex);
                 repositorySession.save(user);
                 repositorySession.getTransaction().commit();
 
-                System.out.println("Task with title " + taskTitle + " has been removed");
+                log.error("Task with title " + taskTitle + " has been removed");
             }
         } else {
-            System.out.println("Error: this user does not have tasks");
+            log.error("Error: this user does not have tasks");
         }
     }
 

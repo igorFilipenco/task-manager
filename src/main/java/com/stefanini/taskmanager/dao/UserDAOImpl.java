@@ -3,12 +3,15 @@ package com.stefanini.taskmanager.dao;
 
 import com.stefanini.taskmanager.entity.User;
 import com.stefanini.taskmanager.utils.HibernateUtil;
+import org.apache.log4j.Logger;
 import org.hibernate.Session;
 
 import javax.persistence.Query;
 import java.util.List;
 
 public class UserDAOImpl implements UserDAO {
+    private static final Logger log = Logger.getLogger(UserDAOImpl.class);
+
     @Override
     public void createUser(User user) {
         String userName = user.getUserName();
@@ -20,7 +23,7 @@ public class UserDAOImpl implements UserDAO {
             session.save(user);
             session.getTransaction().commit();
         } else {
-            System.out.println("Error: user with username " + user.getUserName() + " already exists");
+            log.error("Error: user with username " + user.getUserName() + " already exists");
         }
     }
 

@@ -1,14 +1,16 @@
 package com.stefanini.taskmanager.service;
 
 
-import com.stefanini.taskmanager.entity.User;
 import com.stefanini.taskmanager.dao.UserDAO;
 import com.stefanini.taskmanager.dao.UserDAOImpl;
+import com.stefanini.taskmanager.entity.User;
 import com.stefanini.taskmanager.utils.ParamsExtractor;
+import org.apache.log4j.Logger;
 
 import java.util.List;
 
 public class UserServiceImpl implements UserService {
+    private static final Logger log = Logger.getLogger(UserServiceImpl.class);
     private static final UserDAO userRepository = new UserDAOImpl();
 
     @Override
@@ -29,7 +31,7 @@ public class UserServiceImpl implements UserService {
         List<User> userList = userRepository.getUsers();
 
         if (userList.size() == 0) {
-            System.out.println("No users were created");
+            log.info("No users were created");
         } else {
             userList.forEach(System.out::println);
         }

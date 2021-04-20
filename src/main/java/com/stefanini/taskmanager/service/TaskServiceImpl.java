@@ -1,15 +1,17 @@
 package com.stefanini.taskmanager.service;
 
 
-import com.stefanini.taskmanager.entity.Task;
 import com.stefanini.taskmanager.dao.TaskDAO;
 import com.stefanini.taskmanager.dao.TaskDAOImpl;
+import com.stefanini.taskmanager.entity.Task;
 import com.stefanini.taskmanager.utils.ParamsExtractor;
+import org.apache.log4j.Logger;
 
 import java.util.List;
 
 
 public class TaskServiceImpl implements TaskService {
+    private static final Logger log = Logger.getLogger(TaskServiceImpl.class);
     private static final TaskDAO taskDAO = new TaskDAOImpl();
 
     @Override
@@ -27,7 +29,7 @@ public class TaskServiceImpl implements TaskService {
         List<Task> userTasks = taskDAO.getTasksByUsername(args);
 
         if (userTasks.size() == 0) {
-            System.out.println("No tasks were assigned to this user");
+            log.info("No tasks were assigned to this user");
         } else {
             userTasks.forEach(System.out::println);
         }

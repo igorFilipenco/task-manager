@@ -6,33 +6,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-@Entity
-@Table(name = "users",
-        uniqueConstraints = {
-        @UniqueConstraint(columnNames = "user_name")
-})
 public class User implements Serializable {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
     private Long id;
-
-    @Column(name = "user_name")
-
     private String userName;
-
-    @Column(name = "first_name")
     private String firstName;
-
-    @Column(name = "last_name")
     private String lastName;
-
-    @ManyToMany(cascade = { CascadeType.ALL })
-    @JoinTable(
-            name = "user_tasks",
-            joinColumns = { @JoinColumn(name = "user_id") },
-            inverseJoinColumns = { @JoinColumn(name = "task_id") }
-    )
     private List<Task> tasks;
 
     public User() {
