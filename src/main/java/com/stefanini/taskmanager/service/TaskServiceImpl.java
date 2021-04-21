@@ -29,17 +29,21 @@ public class TaskServiceImpl implements TaskService {
         List<Task> userTasks = taskDAO.getTasksByUsername(args);
 
         if (userTasks.size() == 0) {
-            log.info("No tasks were assigned to this user");
+            log.info("Task search: No tasks were assigned to this user");
         } else {
-            userTasks.forEach(System.out::println);
+            userTasks.forEach(task-> log.info("Task search: " + task));
         }
     }
 
     @Override
     public void getTasks(String[] args) {
-        List<Task> tasks = taskDAO.getTasks(args);
+        List<Task> taskList = taskDAO.getTasks();
 
-        tasks.forEach(System.out::println);
+        if(taskList.size() == 0) {
+            log.info("Get tasks: no tasks created");
+        } else {
+            taskList.forEach(task -> log.info("Get tasks: " + task));
+        }
     }
 
     @Override

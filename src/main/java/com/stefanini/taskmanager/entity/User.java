@@ -7,7 +7,7 @@ import java.util.List;
 
 
 public class User implements Serializable {
-    private Long id;
+    private int id;
     private String userName;
     private String firstName;
     private String lastName;
@@ -15,7 +15,7 @@ public class User implements Serializable {
     public User() {
     }
 
-    public User(Long id, String userName, String firstName, String lastName) {
+    public User(int id, String userName, String firstName, String lastName) {
         this.id = id;
         this.userName = userName;
         this.firstName = firstName;
@@ -28,12 +28,12 @@ public class User implements Serializable {
         this.lastName = lastName;
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    public int getId() {
+        return id;
     }
 
-    public Long getId() {
-        return id;
+    public void setId(int id) {
+        this.id = id;
     }
 
     public String getUserName() {

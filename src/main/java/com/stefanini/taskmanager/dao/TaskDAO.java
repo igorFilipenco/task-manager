@@ -10,7 +10,7 @@ public interface TaskDAO {
 
     List<Task> getTasksByUsername(String[] args);
 
-    List<Task> getTasks(String[] args);
+    List<Task> getTasks();
 
     void completeTask(String userName, String taskTitle);
 

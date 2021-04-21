@@ -13,6 +13,13 @@ public class UserServiceImpl implements UserService {
     private static final Logger log = Logger.getLogger(UserServiceImpl.class);
     private static final UserDAO userRepository = new UserDAOImpl();
 
+    /**
+     * Receives parameters which were passed to app. Creates User instance
+     * Mapes fields with extracted parameters and calls user DAO
+     *
+     * @param args
+     * @author igor
+     */
     @Override
     public void createUser(String[] args) {
         String userName = ParamsExtractor.getParamFromArg(args, ParamsExtractor.USERNAME_FLAG);
@@ -26,14 +33,18 @@ public class UserServiceImpl implements UserService {
         userRepository.createUser(user);
     }
 
+    /**
+     * Calls user DAO to get all created users and displays them
+     * @author igor
+     */
     @Override
     public void getUsers() {
         List<User> userList = userRepository.getUsers();
 
         if (userList.size() == 0) {
-            log.info("No users were created");
+            log.info("Get users: No users were created");
         } else {
-            userList.forEach(log::info);
+            userList.forEach(user->log.info("Get users: " + user));
         }
     }
 }

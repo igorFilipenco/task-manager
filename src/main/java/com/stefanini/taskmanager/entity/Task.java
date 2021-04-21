@@ -1,13 +1,10 @@
 package com.stefanini.taskmanager.entity;
 
-import javax.persistence.*;
 import java.io.Serializable;
-import java.util.HashSet;
-import java.util.Set;
 
 
 public class Task implements Serializable {
-    private Long id;
+    private int id;
     private String title;
     private String description;
 
@@ -19,11 +16,17 @@ public class Task implements Serializable {
         this.description = description;
     }
 
-    public Long getId() {
+    public Task(int id, String title, String description) {
+        this.id = id;
+        this.title = title;
+        this.description = description;
+    }
+
+    public int getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(int id) {
         this.id = id;
     }
 
