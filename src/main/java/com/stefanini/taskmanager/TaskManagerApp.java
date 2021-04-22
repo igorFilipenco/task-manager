@@ -1,6 +1,6 @@
 package com.stefanini.taskmanager;
 
-import com.stefanini.taskmanager.utils.CommandManager;
+import com.stefanini.taskmanager.utils.CommandExecutionEnvironment;
 import org.apache.log4j.BasicConfigurator;
 
 
@@ -18,7 +18,7 @@ public class TaskManagerApp {
             throw new IllegalArgumentException("Error: no arguments were passed");
         }
 
-        CommandManager manager = new CommandManager();
-        manager.readArgsAndExecuteCommand(args);
+        CommandExecutionEnvironment environment = new CommandExecutionEnvironment();
+        environment.readArgsAndExecuteCommand(args);
     }
 }
