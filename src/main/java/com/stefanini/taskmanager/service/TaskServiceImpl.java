@@ -2,7 +2,7 @@ package com.stefanini.taskmanager.service;
 
 
 import com.stefanini.taskmanager.dao.TaskDAO;
-import com.stefanini.taskmanager.dao.TaskDAOImpl;
+import com.stefanini.taskmanager.dao.jdbcdaoimpl.TaskDAOImpl;
 import com.stefanini.taskmanager.entity.Task;
 import com.stefanini.taskmanager.utils.ParamsExtractor;
 import org.apache.log4j.Logger;
@@ -26,7 +26,8 @@ public class TaskServiceImpl implements TaskService {
 
     @Override
     public void getTasksByUsername(String[] args) {
-        List<Task> userTasks = taskDAO.getTasksByUsername(args);
+        String userName = ParamsExtractor.getParamFromArg(args, ParamsExtractor.USERNAME_FLAG);
+        List<Task> userTasks = taskDAO.getTasksByUsername(userName);
 
         if (userTasks.size() == 0) {
             log.info("Task search: No tasks were assigned to this user");

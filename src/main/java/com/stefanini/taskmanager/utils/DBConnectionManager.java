@@ -1,7 +1,9 @@
 package com.stefanini.taskmanager.utils;
 
+import com.stefanini.taskmanager.validation.AppPropertiesValidator;
 import org.apache.log4j.Logger;
 
+import javax.xml.bind.PropertyException;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
@@ -33,12 +35,14 @@ public class DBConnectionManager {
     private static void initConnectionParams() {
         Properties properties = AppConfig.getProperties();
 
-        if (!properties.isEmpty()) {
-            DB_URL = properties.getProperty("db.url");
-            DB_USER_NAME = properties.getProperty("db.user");
-            DB_USER_PASSWORD = properties.getProperty("db.password");
-        } else {
-            log.error("Extracting params error: wrong database parameters in config file");
+        try {
+            AppPropertiesValidator.validateDBProperties(properties);
+        } catch (PropertyException e) {
+            log.error(e.getMessage());
         }
+
+        DB_URL = properties.getProperty("db.url");
+        DB_USER_NAME = properties.getProperty("db.user");
+        DB_USER_PASSWORD = properties.getProperty("db.password");
     }
 }

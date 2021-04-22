@@ -1,9 +1,6 @@
 package com.stefanini.taskmanager.entity;
 
-import javax.persistence.*;
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
 
 
 public class User implements Serializable {
@@ -58,18 +55,6 @@ public class User implements Serializable {
 
     public void setLastName(String lastName) {
         this.lastName = lastName;
-    }
-
-    public void addTask(Task task) {
-//        if (tasks == null) {
-//            tasks = new ArrayList<>();
-//        }
-//
-//        tasks.add(task);
-    }
-
-    public void completeTask(int index) {
-//        tasks.remove(index);
     }
 
     @Override

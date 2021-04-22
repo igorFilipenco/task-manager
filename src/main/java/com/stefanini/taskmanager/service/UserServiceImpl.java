@@ -2,7 +2,7 @@ package com.stefanini.taskmanager.service;
 
 
 import com.stefanini.taskmanager.dao.UserDAO;
-import com.stefanini.taskmanager.dao.UserDAOImpl;
+import com.stefanini.taskmanager.dao.jdbcdaoimpl.UserDAOImpl;
 import com.stefanini.taskmanager.entity.User;
 import com.stefanini.taskmanager.utils.ParamsExtractor;
 import org.apache.log4j.Logger;

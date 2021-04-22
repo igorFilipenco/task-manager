@@ -2,7 +2,6 @@ package com.stefanini.taskmanager.dao;
 
 
 import com.stefanini.taskmanager.entity.User;
-import org.hibernate.Session;
 
 import java.util.List;
 
