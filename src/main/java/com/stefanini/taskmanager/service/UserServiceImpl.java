@@ -2,7 +2,6 @@ package com.stefanini.taskmanager.service;
 
 
 import com.stefanini.taskmanager.dao.UserDAO;
-import com.stefanini.taskmanager.dao.jdbcdaoimpl.UserDAOImpl;
 import com.stefanini.taskmanager.entity.User;
 import com.stefanini.taskmanager.utils.ParamsExtractor;
 import org.apache.log4j.Logger;
@@ -11,7 +10,11 @@ import java.util.List;
 
 public class UserServiceImpl implements UserService {
     private static final Logger log = Logger.getLogger(UserServiceImpl.class);
-    private static final UserDAO userRepository = new UserDAOImpl();
+    private final UserDAO userDAO;
+
+    public UserServiceImpl(UserDAO userRepository) {
+        this.userDAO = userRepository;
+    }
 
     /**
      * Receives parameters which were passed to app. Creates User instance
@@ -30,7 +33,7 @@ public class UserServiceImpl implements UserService {
         user.setFirstName(firstName);
         user.setLastName(lastName);
 
-        userRepository.createUser(user);
+        userDAO.createUser(user);
     }
 
     /**
@@ -39,7 +42,7 @@ public class UserServiceImpl implements UserService {
      */
     @Override
     public void getUsers() {
-        List<User> userList = userRepository.getUsers();
+        List<User> userList = userDAO.getUsers();
 
         if (userList.size() == 0) {
             log.info("Get users: No users were created");
