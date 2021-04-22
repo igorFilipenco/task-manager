@@ -10,6 +10,7 @@ import org.apache.log4j.Logger;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 
 public class TaskDAOImpl implements TaskDAO {
@@ -68,7 +69,7 @@ public class TaskDAOImpl implements TaskDAO {
 
             log.info("Task create: task was created and assigned on user " + userName);
         } catch (SQLException e) {
-            if (connection != null) {
+            if (Objects.nonNull(connection)) {
                 try {
                     log.info("Task create: transaction rollback");
                     connection.rollback();
@@ -190,7 +191,7 @@ public class TaskDAOImpl implements TaskDAO {
 
             log.info("Task complete: task with title -" + taskTitle + " was removed from user " + userName);
         } catch (SQLException e) {
-            if (connection != null) {
+            if (Objects.nonNull(connection)) {
                 try {
                     log.info("Task complete: transaction rollback due to " + e.getMessage());
                     connection.rollback();

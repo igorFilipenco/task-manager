@@ -2,6 +2,7 @@ package com.stefanini.taskmanager.utils;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Properties;
 
 
 public class ParamsExtractor {
@@ -12,12 +13,25 @@ public class ParamsExtractor {
     public static final String SHOW_ALL_TASKS = "showAllTasks";
     public static final String COMPLETE_TASK = "completeTask";
 
-    public static final String USERNAME_FLAG = "un";
-    public static final String FIRSTNAME_FLAG = "fn";
-    public static final String LASTNAME_FLAG = "ln";
-    public static final String TASK_TITLE_FLAG = "tt";
-    public static final String TASK_DESCRIPTION_FLAG = "td";
+    public static String USERNAME_FLAG;
+    public static String FIRSTNAME_FLAG;
+    public static String LASTNAME_FLAG;
+    public static String TASK_TITLE_FLAG;
+    public static String TASK_DESCRIPTION_FLAG;
 
+    static {
+        setCommandFlags();
+    }
+
+    public static void setCommandFlags() {
+        Properties properties = AppConfig.getProperties();
+
+        USERNAME_FLAG = properties.getProperty("username.flag");
+        FIRSTNAME_FLAG = properties.getProperty("firstname.flag");
+        LASTNAME_FLAG = properties.getProperty("lastname.flag");
+        TASK_TITLE_FLAG = properties.getProperty("tasktitle.flag");
+        TASK_DESCRIPTION_FLAG = properties.getProperty("taskdescription.flag");
+    }
 
     public static String getOperationName(String arg) throws Exception {
         String task = arg.replace("-", "");

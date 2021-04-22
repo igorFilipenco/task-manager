@@ -8,6 +8,7 @@ import org.apache.log4j.Logger;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 
 public class UserDAOImpl implements UserDAO {
@@ -45,7 +46,7 @@ public class UserDAOImpl implements UserDAO {
             }
         } catch (SQLException e) {
             e.printStackTrace();
-            if (connection != null) {
+            if (Objects.nonNull(connection)) {
                 try {
                     log.error("User create: transaction rollback due to error");
                     connection.rollback();
@@ -91,7 +92,7 @@ public class UserDAOImpl implements UserDAO {
             log.error(e.getMessage());
         }
 
-        if (user == null) {
+        if (Objects.isNull(user)) {
             log.info("User search: user with userName " + userName + " not found");
         } else {
             log.info("User search: found user " + user);
