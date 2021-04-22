@@ -3,4 +3,4 @@
 .project
 .dbeaver/*
 .settings/*
-.idea/*/**
+/.idea/*/**
