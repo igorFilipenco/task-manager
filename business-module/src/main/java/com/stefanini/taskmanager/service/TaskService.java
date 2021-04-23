@@ -4,7 +4,7 @@ public interface TaskService {
     /**
      * Creates new task and links with passed user
      *
-     * @param args
+     * @param args arguments which are passed to application on start
      * @author igor
      */
     void createTask(String[] args);
@@ -12,7 +12,7 @@ public interface TaskService {
     /**
      * Gets task by passed username
      *
-     * @param args
+     * @param args arguments which are passed to application on start
      * @author igor
      */
     void getTasksByUsername(String[] args);
@@ -27,7 +27,7 @@ public interface TaskService {
     /**
      * Removes link between passed user and task
      *
-     * @param args
+     * @param args arguments which are passed to application on start
      * @author igor
      */
     void completeTask(String[] args);

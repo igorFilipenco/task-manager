@@ -26,7 +26,7 @@ public interface UserDAO {
     /**
      * Searches user by its username
      *
-     * @param userName
+     * @param userName optional parameter passed to application on start
      * @return user if user found returns User instance
      * @author igor
      */
