@@ -4,7 +4,7 @@ import java.io.Serializable;
 
 
 public class Task implements Serializable {
-    private int id;
+    private Long id;
     private String title;
     private String description;
 
@@ -16,17 +16,17 @@ public class Task implements Serializable {
         this.description = description;
     }
 
-    public Task(int id, String title, String description) {
+    public Task(Long id, String title, String description) {
         this.id = id;
         this.title = title;
         this.description = description;
     }
 
-    public int getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Long id) {
         this.id = id;
     }
 

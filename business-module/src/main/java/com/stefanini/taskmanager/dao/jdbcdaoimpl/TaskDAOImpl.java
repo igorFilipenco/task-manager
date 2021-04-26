@@ -1,9 +1,7 @@
 package com.stefanini.taskmanager.dao.jdbcdaoimpl;
 
-import com.stefanini.taskmanager.dao.AbstractDAO;
 import com.stefanini.taskmanager.dao.TaskDAO;
 import com.stefanini.taskmanager.dao.UserDAO;
-
 import com.stefanini.taskmanager.entity.Task;
 import com.stefanini.taskmanager.entity.User;
 import com.stefanini.taskmanager.utils.DBConnectionManager;
@@ -15,7 +13,7 @@ import java.util.List;
 import java.util.Objects;
 
 
-public class TaskDAOImpl implements TaskDAO, AbstractDAO<Task> {
+public class TaskDAOImpl implements TaskDAO {
     private static final Logger log = Logger.getLogger(TaskDAOImpl.class);
     private final UserDAO userDAO = new UserDAOImpl();
 
@@ -52,7 +50,7 @@ public class TaskDAOImpl implements TaskDAO, AbstractDAO<Task> {
 
             if (rs.next()) {
                 recordedTaskId = rs.getInt(1);
-                newTask.setId(rs.getInt(1));
+                newTask.setId(rs.getLong(1));
                 newTask.setTitle(rs.getString(2));
                 newTask.setDescription(rs.getString(3));
             }
@@ -63,8 +61,8 @@ public class TaskDAOImpl implements TaskDAO, AbstractDAO<Task> {
 
             String linkQuery = "INSERT INTO `user_task`(user_id, task_id) VALUES(?,?)";
             linkStatement = connection.prepareStatement(linkQuery);
-            linkStatement.setInt(1, user.getId());
-            linkStatement.setInt(2, recordedTaskId);
+            linkStatement.setLong(1, user.getId());
+            linkStatement.setLong(2, recordedTaskId);
             linkStatement.executeUpdate();
 
             log.info("Task create: task was created and assigned on user " + userName);
@@ -104,7 +102,7 @@ public class TaskDAOImpl implements TaskDAO, AbstractDAO<Task> {
             result = statement.executeQuery(query);
 
             while (result.next()) {
-                userTasks.add(new Task(result.getInt("id"), result.getString("title"), result.getString("description")));
+                userTasks.add(new Task(result.getLong("id"), result.getString("title"), result.getString("description")));
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -128,7 +126,7 @@ public class TaskDAOImpl implements TaskDAO, AbstractDAO<Task> {
             result = statement.executeQuery();
 
             while (result.next()) {
-                int id = result.getInt("id");
+                long id = result.getInt("id");
                 String title = result.getString("title");
                 String description = result.getString("description");
 
@@ -151,7 +149,7 @@ public class TaskDAOImpl implements TaskDAO, AbstractDAO<Task> {
         }
 
         List<Task> userTasks = getTasksByUsername(userName);
-        int taskId = -1;
+        long taskId = -1;
 
         for (Task task : userTasks) {
             if (task.getTitle().equals(taskTitle)) taskId = task.getId();

@@ -4,3 +4,6 @@
 .dbeaver/*
 .settings/*
 /.idea/*/**
+/business-module/.settings/*
+/business-module/.dbeaver/*
+/main-module/.settings/*

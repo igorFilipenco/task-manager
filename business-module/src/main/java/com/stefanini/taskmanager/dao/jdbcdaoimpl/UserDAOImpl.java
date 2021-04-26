@@ -40,7 +40,7 @@ public class UserDAOImpl implements UserDAO {
                     ResultSet generatedKeys = statement.getGeneratedKeys();
 
                     while (generatedKeys.next()) {
-                        createdUser.setId(generatedKeys.getInt(1));
+                        createdUser.setId(generatedKeys.getLong(1));
                         createdUser.setUserName(generatedKeys.getString(2));
                         createdUser.setFirstName(generatedKeys.getString(3));
                         createdUser.setLastName(generatedKeys.getString(4));
@@ -87,7 +87,7 @@ public class UserDAOImpl implements UserDAO {
             result = statement.executeQuery();
 
             while (result.next()) {
-                user = new User(result.getInt("id"),
+                user = new User(result.getLong("id"),
                         result.getString("userName"),
                         result.getString("firstName"),
                         result.getString("lastName")
@@ -121,7 +121,7 @@ public class UserDAOImpl implements UserDAO {
             result = statement.executeQuery();
 
             while (result.next()) {
-                int id = result.getInt("id");
+                long id = result.getLong("id");
                 String userName = result.getString("userName");
                 String firstName = result.getString("firstName");
                 String lastName = result.getString("lastName");

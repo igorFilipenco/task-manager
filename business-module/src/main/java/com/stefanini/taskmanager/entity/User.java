@@ -4,7 +4,7 @@ import java.io.Serializable;
 
 
 public class User implements Serializable {
-    private int id;
+    private Long id;
     private String userName;
     private String firstName;
     private String lastName;
@@ -12,7 +12,7 @@ public class User implements Serializable {
     public User() {
     }
 
-    public User(int id, String userName, String firstName, String lastName) {
+    public User(Long id, String userName, String firstName, String lastName) {
         this.id = id;
         this.userName = userName;
         this.firstName = firstName;
@@ -25,11 +25,11 @@ public class User implements Serializable {
         this.lastName = lastName;
     }
 
-    public int getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
@@ -59,10 +59,11 @@ public class User implements Serializable {
 
     @Override
     public String toString() {
-        return "User{" +
-                "userName='" + userName + '\'' +
-                ", firstName='" + firstName + '\'' +
-                ", lastName='" + lastName + '\'' +
+        return "User{ " +
+                "id=" + id +
+                ", userName = '" + userName + '\'' +
+                ", firstName = '" + firstName + '\'' +
+                ", lastName = '" + lastName + '\'' +
                 '}';
     }
 }
