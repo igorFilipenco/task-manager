@@ -3,9 +3,8 @@ package com.stefanini.taskmanager.dao;
 
 import com.stefanini.taskmanager.entity.User;
 
-import java.util.List;
 
-public interface UserDAO {
+public interface UserDAO extends AbstractDAO<User>{
     /**
      * This method checks if user in database exists
      * If not - creates new one
@@ -13,15 +12,7 @@ public interface UserDAO {
      * @param user user instance to be recorded to db
      * @author igor
      */
-    void createUser(User user);
-
-    /**
-     * Returns a list off all users
-     *
-     * @return userList
-     * @author igor
-     */
-    List<User> getUsers();
+    User create(User user);
 
     /**
      * Searches user by its username

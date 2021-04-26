@@ -15,13 +15,14 @@ public class UserDAOImpl implements UserDAO {
     private static final Logger log = Logger.getLogger(UserDAOImpl.class);
 
     @Override
-    public void createUser(User user) {
+    public User create(User user) {
         String userName = user.getUserName();
         String firstName = user.getFirstName();
         String lastName = user.getLastName();
         User duplicateUser = getUserByUserName(userName);
+        User createdUser = new User();
         Connection connection = null;
-        PreparedStatement statement = null;
+        PreparedStatement statement;
 
         try {
             if (duplicateUser == null) {
@@ -29,13 +30,29 @@ public class UserDAOImpl implements UserDAO {
 
                 String query = "INSERT INTO `user`(userName, firstName, lastName) VALUES(?,?,?)";
                 connection = DBConnectionManager.getConnection();
-                statement = connection.prepareStatement(query);
+                statement = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
                 statement.setString(1, userName);
                 statement.setString(2, firstName);
                 statement.setString(3, lastName);
                 statement.executeUpdate();
+
+                try {
+                    ResultSet generatedKeys = statement.getGeneratedKeys();
+
+                    while (generatedKeys.next()) {
+                        createdUser.setId(generatedKeys.getInt(1));
+                        createdUser.setUserName(generatedKeys.getString(2));
+                        createdUser.setFirstName(generatedKeys.getString(3));
+                        createdUser.setLastName(generatedKeys.getString(4));
+                    }
+                } catch (NullPointerException e) {
+                    e.printStackTrace();
+                }
+
             } else {
                 log.info("Error: user with username " + user.getUserName() + " already exists");
+
+                return createdUser;
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -50,6 +67,8 @@ public class UserDAOImpl implements UserDAO {
 
             log.error("User create: user was not create because of error - " + e.getMessage());
         }
+
+        return createdUser;
     }
 
     @Override
@@ -88,7 +107,7 @@ public class UserDAOImpl implements UserDAO {
     }
 
     @Override
-    public List<User> getUsers() {
+    public List<User> getList() {
         String query = "SELECT * FROM user";
         List<User> userList = new ArrayList<>();
         Connection connection;

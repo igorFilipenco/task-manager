@@ -1,7 +1,7 @@
 package com.stefanini.taskmanager.command;
 
-import com.stefanini.taskmanager.dao.DAOFactory;
-import com.stefanini.taskmanager.dao.jdbcdaoimpl.JDBCDAOFactoryImpl;
+import com.stefanini.taskmanager.dao.factory.AbstractDAOFactory;
+import com.stefanini.taskmanager.dao.factory.DAOFactory;
 import com.stefanini.taskmanager.service.TaskService;
 import com.stefanini.taskmanager.service.TaskServiceImpl;
 import com.stefanini.taskmanager.service.UserService;
@@ -9,11 +9,12 @@ import com.stefanini.taskmanager.service.UserServiceImpl;
 
 
 public class CommandStore {
-    private static final DAOFactory daoFactory = new JDBCDAOFactoryImpl();
+    private static final DAOFactory daoFactory;
     private static final UserService userService;
     private static final TaskService taskService;
 
     static {
+        daoFactory = AbstractDAOFactory.createDAOFactory("jdbc");
         taskService = new TaskServiceImpl(daoFactory.getTaskDAO());
         userService = new UserServiceImpl(daoFactory.getUserDAO());
     }

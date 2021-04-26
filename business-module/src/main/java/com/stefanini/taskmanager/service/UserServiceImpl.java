@@ -26,12 +26,13 @@ public class UserServiceImpl implements UserService {
         user.setFirstName(firstName);
         user.setLastName(lastName);
 
-        userDAO.createUser(user);
+        User newUser = userDAO.create(user);
+        log.info("User create: created user data " + newUser);
     }
 
     @Override
     public void getUsers() {
-        List<User> userList = userDAO.getUsers();
+        List<User> userList = userDAO.getList();
 
         if (userList.size() == 0) {
             log.info("Get users: No users were created");

@@ -5,7 +5,7 @@ import com.stefanini.taskmanager.entity.Task;
 import java.util.List;
 
 
-public interface TaskDAO {
+public interface TaskDAO extends AbstractDAO<Task>{
     /**
      * Method adds new task and assigns it on user
      *
@@ -13,7 +13,7 @@ public interface TaskDAO {
      * @param userName is necessary to create link between inserted task and existing user
      * @author igor
      */
-    void createTask(Task task, String userName);
+    Task create(Task task, String userName);
 
     /**
      * Method searches tasks which were assigned to concrete user
@@ -23,14 +23,6 @@ public interface TaskDAO {
      * @author igor
      */
     List<Task> getTasksByUsername(String userName);
-
-    /**
-     * Returns a list off all tasks
-     *
-     * @return taskList
-     * @author igor
-     */
-    List<Task> getTasks();
 
     /**
      * Method removes link between user and task

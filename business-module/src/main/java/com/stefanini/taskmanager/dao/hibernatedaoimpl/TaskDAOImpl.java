@@ -7,8 +7,8 @@ import java.util.List;
 
 public class TaskDAOImpl implements TaskDAO {
     @Override
-    public void createTask(Task task, String userName) {
-
+    public Task create(Task task, String userName) {
+        return new Task();
     }
 
     @Override
@@ -17,7 +17,7 @@ public class TaskDAOImpl implements TaskDAO {
     }
 
     @Override
-    public List<Task> getTasks() {
+    public List<Task> getList() {
         return null;
     }
 

@@ -24,7 +24,7 @@ public class TaskServiceImpl implements TaskService {
         String taskDescription = ParamsExtractor.getParamFromArg(args, ParamsExtractor.TASK_DESCRIPTION_FLAG);
         Task task = new Task(taskTitle, taskDescription);
 
-        taskDAO.createTask(task, userName);
+        taskDAO.create(task, userName);
     }
 
     @Override
@@ -41,7 +41,7 @@ public class TaskServiceImpl implements TaskService {
 
     @Override
     public void getTasks() {
-        List<Task> taskList = taskDAO.getTasks();
+        List<Task> taskList = taskDAO.getList();
 
         if (taskList.size() == 0) {
             log.info("Get tasks: no tasks created");

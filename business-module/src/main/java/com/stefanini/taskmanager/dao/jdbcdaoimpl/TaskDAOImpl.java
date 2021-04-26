@@ -1,5 +1,6 @@
 package com.stefanini.taskmanager.dao.jdbcdaoimpl;
 
+import com.stefanini.taskmanager.dao.AbstractDAO;
 import com.stefanini.taskmanager.dao.TaskDAO;
 import com.stefanini.taskmanager.dao.UserDAO;
 
@@ -14,20 +15,22 @@ import java.util.List;
 import java.util.Objects;
 
 
-public class TaskDAOImpl implements TaskDAO {
+public class TaskDAOImpl implements TaskDAO, AbstractDAO<Task> {
     private static final Logger log = Logger.getLogger(TaskDAOImpl.class);
     private final UserDAO userDAO = new UserDAOImpl();
 
     @Override
-    public void createTask(Task task, String userName) {
+    public Task create(Task task, String userName) {
         User user = userDAO.getUserByUserName(userName);
+        Task newTask = new Task();
         Connection connection = null;
         PreparedStatement taskStatement;
         PreparedStatement linkStatement;
 
-        if (user == null) {
+        if (Objects.isNull(user)) {
             log.info("Task create: user with username " + userName + " was not found. Task was not created");
-            return;
+
+            return newTask;
         }
 
         try {
@@ -41,7 +44,7 @@ public class TaskDAOImpl implements TaskDAO {
             if (affectedRows == 0) {
                 log.error("Task create: error during task create, no rows affected");
 
-                return;
+                return newTask;
             }
 
             int recordedTaskId = -1;
@@ -49,6 +52,9 @@ public class TaskDAOImpl implements TaskDAO {
 
             if (rs.next()) {
                 recordedTaskId = rs.getInt(1);
+                newTask.setId(rs.getInt(1));
+                newTask.setTitle(rs.getString(2));
+                newTask.setDescription(rs.getString(3));
             }
 
             if (recordedTaskId < 0) {
@@ -72,6 +78,8 @@ public class TaskDAOImpl implements TaskDAO {
                 }
             }
         }
+
+        return newTask;
     }
 
     @Override
@@ -106,7 +114,7 @@ public class TaskDAOImpl implements TaskDAO {
     }
 
     @Override
-    public List<Task> getTasks() {
+    public List<Task> getList() {
         String query = "SELECT * FROM task";
         List<Task> taskList = new ArrayList<>();
         Connection connection;

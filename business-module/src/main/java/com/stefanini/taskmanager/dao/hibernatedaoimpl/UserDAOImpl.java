@@ -7,12 +7,12 @@ import java.util.List;
 
 public class UserDAOImpl implements UserDAO {
     @Override
-    public void createUser(User user) {
-
+    public User create(User user) {
+        return new User();
     }
 
     @Override
-    public List<User> getUsers() {
+    public List<User> getList() {
         return null;
     }
 
