@@ -23,8 +23,6 @@ public interface UserDAO extends AbstractDAO<User>{
      */
     User getUserByUserName(String userName);
 
-    void deleteLinkToTaskByUserId(Long userId);
-
     /**
      * Removes all users from table. This is a service method usually used for preparing tests
      *

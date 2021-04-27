@@ -1,12 +1,26 @@
 package com.stefanini.taskmanager.entity;
 
+import javax.persistence.*;
 import java.io.Serializable;
+import java.util.HashSet;
+import java.util.Set;
 
-
+@Entity
+@Table(name = "task")
 public class Task implements Serializable {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
     private Long id;
+
+    @Column(name = "title")
     private String title;
+
+    @Column(name = "description")
     private String description;
+
+    @ManyToMany(mappedBy = "tasks")
+    private Set<User> users = new HashSet<>();
 
     public Task() {
     }
@@ -44,6 +58,14 @@ public class Task implements Serializable {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public Set<User> getUsers() {
+        return users;
+    }
+
+    public void setUsers(Set<User> users) {
+        this.users = users;
     }
 
     @Override

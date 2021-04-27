@@ -14,7 +14,7 @@ public class CommandStore {
     private static final TaskService taskService;
 
     static {
-        daoFactory = AbstractDAOFactory.createDAOFactory("jdbc");
+        daoFactory = AbstractDAOFactory.createDAOFactory("hibernate");
         taskService = new TaskServiceImpl(daoFactory.getTaskDAO());
         userService = new UserServiceImpl(daoFactory.getUserDAO());
     }

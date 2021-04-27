@@ -215,7 +215,6 @@ public class UserDAOImpl implements UserDAO {
         return deletedUser;
     }
 
-    @Override
     public void deleteLinkToTaskByUserId(Long userId) {
         String linkQuery = "DELETE FROM user_task where user_id=" + userId;
         Connection connection = null;
