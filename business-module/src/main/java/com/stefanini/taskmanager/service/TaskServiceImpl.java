@@ -7,6 +7,7 @@ import com.stefanini.taskmanager.utils.ParamsExtractor;
 import org.apache.log4j.Logger;
 
 import java.util.List;
+import java.util.Objects;
 
 
 public class TaskServiceImpl implements TaskService {
@@ -40,6 +41,19 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
+    public Task getTaskByTitle(String[] args) {
+        String taskTitle = ParamsExtractor.getParamFromArg(args, ParamsExtractor.TASK_TITLE_FLAG);
+        Task task = taskDAO.getTaskByTitle(taskTitle);
+
+        if (Objects.isNull(task)) {
+            log.info("Task delete: task with title " + taskTitle + " does not exist");
+            return null;
+        }
+
+        return task;
+    }
+
+    @Override
     public void getList() {
         List<Task> taskList = taskDAO.getList();
 
@@ -58,7 +72,11 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
-    public void delete(String[] parameterName) {
+    public void delete(String[] args) {
+        Task task = getTaskByTitle(args);
 
+        if (Objects.nonNull(task)) {
+            Task deletedTask = taskDAO.delete(task.getId());
+        }
     }
 }

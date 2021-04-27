@@ -1,5 +1,6 @@
 package com.stefanini.taskmanager.dao.jdbcdaoimpl;
 
+import com.mysql.cj.Session;
 import com.stefanini.taskmanager.dao.TaskDAO;
 import com.stefanini.taskmanager.dao.UserDAO;
 import com.stefanini.taskmanager.entity.Task;
@@ -108,6 +109,12 @@ public class TaskDAOImpl implements TaskDAO {
         }
 
         return userTasks;
+    }
+
+    @Override
+    public Task getTaskByTitle(String title) {
+        //TODO write this method
+        return null;
     }
 
     @Override
@@ -240,5 +247,9 @@ public class TaskDAOImpl implements TaskDAO {
     @Override
     public Task delete(Long id) {
         return null;
+    }
+
+    public void assignTaskToUser(Task task, String userName, Session session) {
+//TODO implement this method for jdbc
     }
 }

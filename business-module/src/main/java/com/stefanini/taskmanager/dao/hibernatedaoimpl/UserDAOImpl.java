@@ -90,6 +90,8 @@ public class UserDAOImpl implements UserDAO {
             log.info("User search: user with username " + userName + " not found");
         }
 
+        session.close();
+
         return user;
     }
 

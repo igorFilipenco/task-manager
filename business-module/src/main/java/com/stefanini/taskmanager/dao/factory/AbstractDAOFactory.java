@@ -11,7 +11,7 @@ public abstract class AbstractDAOFactory {
             case "hibernate":
                 return new HibernateDAOFactory();
             default:
-                return new JDBCDAOFactory();
+                throw new IllegalArgumentException("ERROR : wrong argument passed to abstract DAO factory");
         }
     }
 }

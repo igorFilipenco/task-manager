@@ -56,6 +56,7 @@ public class CommandExecutionEnvironment {
                 commandExecutor.deleteUser(args);
                 break;
             }
+            //TODO create command for task deletion
         }
     }
 }

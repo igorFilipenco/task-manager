@@ -89,13 +89,22 @@ public class User implements Serializable {
         this.tasks = tasks;
     }
 
+    public void addTask(Task task) {
+        tasks.add(task);
+    }
+
+    public void completeTask(Task task) {
+        tasks.remove(task);
+    }
+
     @Override
     public String toString() {
-        return "User{ " +
+        return "User{" +
                 "id=" + id +
-                ", userName = '" + userName + '\'' +
-                ", firstName = '" + firstName + '\'' +
-                ", lastName = '" + lastName + '\'' +
+                ", userName='" + userName + '\'' +
+                ", firstName='" + firstName + '\'' +
+                ", lastName='" + lastName + '\'' +
+                ", tasks=" + tasks +
                 '}';
     }
 }

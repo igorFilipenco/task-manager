@@ -1,5 +1,6 @@
 package com.stefanini.taskmanager.dao;
 
+import com.mysql.cj.Session;
 import com.stefanini.taskmanager.entity.Task;
 
 import java.util.List;
@@ -23,6 +24,15 @@ public interface TaskDAO extends AbstractDAO<Task>{
      * @author igor
      */
     List<Task> getTasksByUsername(String userName);
+
+    /**
+     * Method searches task by title
+     *
+     * @param title necessary parameter passed to application on start to find task using title
+     * @return Task task can be empty, if task does not exist
+     * @author igor
+     */
+    Task getTaskByTitle(String title);
 
     /**
      * Method removes link between user and task
