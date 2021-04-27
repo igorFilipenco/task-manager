@@ -20,7 +20,7 @@ public class TaskDAOImpl implements TaskDAO {
     @Override
     public Task create(Task task, String userName) {
         User user = userDAO.getUserByUserName(userName);
-        Task newTask = new Task();
+        Task newTask = null;
         Connection connection = null;
         PreparedStatement taskStatement;
         PreparedStatement linkStatement;
@@ -45,18 +45,17 @@ public class TaskDAOImpl implements TaskDAO {
                 return newTask;
             }
 
-            int recordedTaskId = -1;
+            long recordedTaskId = -1;
             ResultSet rs = taskStatement.getGeneratedKeys();
 
             if (rs.next()) {
                 recordedTaskId = rs.getInt(1);
-                newTask.setId(rs.getLong(1));
-                newTask.setTitle(rs.getString(2));
-                newTask.setDescription(rs.getString(3));
             }
 
             if (recordedTaskId < 0) {
                 log.error("Task create: can't retrieve created task id");
+            } else {
+                newTask = getOneById(recordedTaskId);
             }
 
             String linkQuery = "INSERT INTO `user_task`(user_id, task_id) VALUES(?,?)";
@@ -109,6 +108,42 @@ public class TaskDAOImpl implements TaskDAO {
         }
 
         return userTasks;
+    }
+
+    @Override
+    public Task getOneById(Long taskId) {
+        Task task = null;
+        Connection connection;
+        PreparedStatement statement;
+        ResultSet result;
+
+        try {
+            String query = "SELECT * FROM `task` WHERE id = ?";
+            log.info("Task search: Search for task with id " + taskId);
+            connection = DBConnectionManager.getConnection();
+            statement = connection.prepareStatement(query);
+            statement.setLong(1, taskId);
+            result = statement.executeQuery();
+
+            if (result.next()) {
+                task =
+                        new Task(
+                                result.getLong(1),
+                                result.getString(2),
+                                result.getString(3)
+                        );
+            }
+        } catch (SQLException e) {
+            log.error(e.getMessage());
+        }
+
+        if (Objects.isNull(task)) {
+            log.info("Task search: task with id " + taskId + " not found");
+        } else {
+            log.info("Task search: found task " + task);
+        }
+
+        return task;
     }
 
     @Override
@@ -200,6 +235,10 @@ public class TaskDAOImpl implements TaskDAO {
         } catch (SQLException e) {
             log.error(e.getMessage());
         }
+    }
 
+    @Override
+    public Task delete(Long id) {
+        return null;
     }
 }

@@ -24,7 +24,8 @@ public class CommandExecutionEnvironment {
                 new CreateTaskCommand(commandStore),
                 new GetTasksListCommand(commandStore),
                 new GetTaskByUsernameCommand(commandStore),
-                new CompleteTaskCommand(commandStore)
+                new CompleteTaskCommand(commandStore),
+                new DeleteUserCommand(commandStore)
         );
 
         switch (task) {
@@ -49,6 +50,10 @@ public class CommandExecutionEnvironment {
             }
             case COMPLETE_TASK: {
                 commandExecutor.completeTask(args);
+                break;
+            }
+            case DELETE_USER: {
+                commandExecutor.deleteUser(args);
                 break;
             }
         }

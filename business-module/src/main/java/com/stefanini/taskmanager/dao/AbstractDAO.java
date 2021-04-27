@@ -10,4 +10,20 @@ public interface AbstractDAO<T> {
      * @author igor
      */
     List<T> getList();
+
+    /**
+     * Deletes instance by id
+     *
+     * @return T entity returns deleted entity
+     * @author igor
+     */
+    T delete(Long id);
+
+    /**
+     * Fetches instance by id
+     *
+     * @return T entity returns fetched entity
+     * @author igor
+     */
+    T getOneById(Long id);
 }

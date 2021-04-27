@@ -7,6 +7,7 @@ import com.stefanini.taskmanager.utils.ParamsExtractor;
 import org.apache.log4j.Logger;
 
 import java.util.List;
+import java.util.Objects;
 
 public class UserServiceImpl implements UserService {
     private static final Logger log = Logger.getLogger(UserServiceImpl.class);
@@ -31,13 +32,29 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void getUsers() {
+    public void getList() {
         List<User> userList = userDAO.getList();
 
         if (userList.size() == 0) {
             log.info("Get users: No users were created");
         } else {
-            userList.forEach(user->log.info("Get users: " + user));
+            userList.forEach(user -> log.info("Get users: " + user));
         }
+    }
+
+    @Override
+    public void delete(String[] args) {
+        String userName = ParamsExtractor.getParamFromArg(args, ParamsExtractor.USERNAME_FLAG);
+        User userToDelete = userDAO.getUserByUserName(userName);
+
+        if (Objects.isNull(userToDelete)) {
+            log.error("User delete: user with username " + userName + " does not exist");
+
+            return;
+        }
+
+        User deletedUser = userDAO.delete(userToDelete.getId());
+
+        log.info("User delete: user " + deletedUser + " deleted");
     }
 }

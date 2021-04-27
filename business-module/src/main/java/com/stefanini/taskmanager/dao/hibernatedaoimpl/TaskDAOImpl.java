@@ -12,6 +12,11 @@ public class TaskDAOImpl implements TaskDAO {
     }
 
     @Override
+    public Task getOneById(Long id) {
+        return null;
+    }
+
+    @Override
     public List<Task> getTasksByUsername(String userName) {
         return null;
     }
@@ -29,5 +34,10 @@ public class TaskDAOImpl implements TaskDAO {
     @Override
     public void deleteAllTasks() {
 
+    }
+
+    @Override
+    public Task delete(Long id) {
+        return null;
     }
 }

@@ -17,6 +17,11 @@ public class UserDAOImpl implements UserDAO {
     }
 
     @Override
+    public User getOneById(Long id) {
+        return null;
+    }
+
+    @Override
     public User getUserByUserName(String userName) {
         return null;
     }
@@ -24,5 +29,15 @@ public class UserDAOImpl implements UserDAO {
     @Override
     public void deleteAllUsers() {
 
+    }
+
+    @Override
+    public void deleteLinkToTaskByUserId(Long userId) {
+
+    }
+
+    @Override
+    public User delete(Long id) {
+        return null;
     }
 }

@@ -1,6 +1,6 @@
 package com.stefanini.taskmanager.service;
 
-public interface TaskService {
+public interface TaskService extends BasicService{
     /**
      * Creates new task and links with passed user
      *
@@ -16,13 +16,6 @@ public interface TaskService {
      * @author igor
      */
     void getTasksByUsername(String[] args);
-
-    /**
-     * Displays all tasks fetched by taskDAO
-     *
-     * @author igor
-     */
-    void getTasks();
 
     /**
      * Removes link between passed user and task

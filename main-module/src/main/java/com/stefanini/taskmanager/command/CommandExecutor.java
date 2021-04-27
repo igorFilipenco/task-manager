@@ -7,14 +7,24 @@ public class CommandExecutor {
     Command getTasks;
     Command getTasksByUsername;
     Command completeTask;
+    Command deleteUser;
 
-    public CommandExecutor(Command createUser, Command getUserList, Command createTask, Command getTasks, Command getTasksByUsername, Command completeTask) {
+    public CommandExecutor(
+            Command createUser,
+            Command getUserList,
+            Command createTask,
+            Command getTasks,
+            Command getTasksByUsername,
+            Command completeTask,
+            Command deleteUser
+    ) {
         this.createUser = createUser;
         this.getUserList = getUserList;
         this.createTask = createTask;
         this.getTasks = getTasks;
         this.getTasksByUsername = getTasksByUsername;
         this.completeTask = completeTask;
+        this.deleteUser = deleteUser;
     }
 
     public void createUser(String[] args){
@@ -39,5 +49,9 @@ public class CommandExecutor {
 
     public void completeTask(String[] args){
         completeTask.execute(args);
+    }
+
+    public void deleteUser(String[] args) {
+        deleteUser.execute(args);
     }
 }

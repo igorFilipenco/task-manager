@@ -24,7 +24,7 @@ public class CommandStore {
     }
 
     public void getUsers() {
-        userService.getUsers();
+        userService.getList();
     }
 
     public void createTask(String[] args) {
@@ -36,10 +36,14 @@ public class CommandStore {
     }
 
     public void getTasks() {
-        taskService.getTasks();
+        taskService.getList();
     }
 
     public void completeTask(String[] args) {
         taskService.completeTask(args);
+    }
+
+    public void deleteUser(String[] args){
+        userService.delete(args);
     }
 }

@@ -40,7 +40,7 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
-    public void getTasks() {
+    public void getList() {
         List<Task> taskList = taskDAO.getList();
 
         if (taskList.size() == 0) {
@@ -50,11 +50,15 @@ public class TaskServiceImpl implements TaskService {
         }
     }
 
-
     @Override
     public void completeTask(String[] args) {
         String userName = ParamsExtractor.getParamFromArg(args, ParamsExtractor.USERNAME_FLAG);
         String taskTitle = ParamsExtractor.getParamFromArg(args, ParamsExtractor.TASK_TITLE_FLAG);
         taskDAO.completeTask(userName, taskTitle);
+    }
+
+    @Override
+    public void delete(String[] parameterName) {
+
     }
 }
