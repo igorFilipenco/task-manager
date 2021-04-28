@@ -9,4 +9,6 @@ public interface UserService extends BasicService{
      * @author igor
      */
     void createUser(String[] args);
+
+    void createUserAndAssignTask(String[] args);
 }

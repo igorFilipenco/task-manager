@@ -13,6 +13,8 @@ public class ParamsExtractor {
     public static final String SHOW_ALL_TASKS = "showAllTasks";
     public static final String COMPLETE_TASK = "completeTask";
     public static final String DELETE_USER = "deleteUser";
+    public static final String CREATE_USER_AND_TASK = "createUserAndTask";
+
 
     public static String USERNAME_FLAG;
     public static String FIRSTNAME_FLAG;
@@ -43,7 +45,8 @@ public class ParamsExtractor {
                 SHOW_TASKS_BY_USERNAME,
                 SHOW_ALL_TASKS,
                 COMPLETE_TASK,
-                DELETE_USER
+                DELETE_USER,
+                CREATE_USER_AND_TASK
         );
 
         if (!tasks.contains(task)) {

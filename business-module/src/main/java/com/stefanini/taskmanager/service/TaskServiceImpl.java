@@ -19,11 +19,20 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
-    public void createTask(String[] args) {
-        String userName = ParamsExtractor.getParamFromArg(args, ParamsExtractor.USERNAME_FLAG);
+    public Task prepareTask(String[] args) {
+        Task task = new Task();
         String taskTitle = ParamsExtractor.getParamFromArg(args, ParamsExtractor.TASK_TITLE_FLAG);
         String taskDescription = ParamsExtractor.getParamFromArg(args, ParamsExtractor.TASK_DESCRIPTION_FLAG);
-        Task task = new Task(taskTitle, taskDescription);
+        task.setTitle(taskTitle);
+        task.setDescription(taskDescription);
+
+        return task;
+    }
+
+    @Override
+    public void createTask(String[] args) {
+        String userName = ParamsExtractor.getParamFromArg(args, ParamsExtractor.USERNAME_FLAG);
+        Task task = prepareTask(args);
 
         taskDAO.create(task, userName);
     }

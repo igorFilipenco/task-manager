@@ -1,6 +1,8 @@
 package com.stefanini.taskmanager.dao.hibernatedaoimpl;
 
+import com.stefanini.taskmanager.dao.TaskDAO;
 import com.stefanini.taskmanager.dao.UserDAO;
+import com.stefanini.taskmanager.entity.Task;
 import com.stefanini.taskmanager.entity.User;
 import com.stefanini.taskmanager.utils.HibernateUtil;
 import org.apache.log4j.Logger;
@@ -13,6 +15,7 @@ import java.util.Objects;
 
 public class UserDAOImpl implements UserDAO {
     private static final Logger log = Logger.getLogger(UserDAOImpl.class);
+    private static final TaskDAO taskDAO = new TaskDAOImpl();
 
     @Override
     public User create(User user) {
@@ -31,6 +34,14 @@ public class UserDAOImpl implements UserDAO {
         }
 
         return getOneById(newUserId);
+    }
+
+    @Override
+    public User createUserAndAssignTask(User user, Task task) {
+        User createdUser = create(user);
+        taskDAO.create(task, user.getUserName());
+
+        return createdUser;
     }
 
     @Override

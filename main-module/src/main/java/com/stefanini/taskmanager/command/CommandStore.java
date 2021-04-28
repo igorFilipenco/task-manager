@@ -1,5 +1,7 @@
 package com.stefanini.taskmanager.command;
 
+import com.stefanini.taskmanager.dao.TaskDAO;
+import com.stefanini.taskmanager.dao.UserDAO;
 import com.stefanini.taskmanager.dao.factory.AbstractDAOFactory;
 import com.stefanini.taskmanager.dao.factory.DAOFactory;
 import com.stefanini.taskmanager.service.TaskService;
@@ -15,8 +17,10 @@ public class CommandStore {
 
     static {
         daoFactory = AbstractDAOFactory.createDAOFactory("hibernate");
-        taskService = new TaskServiceImpl(daoFactory.getTaskDAO());
-        userService = new UserServiceImpl(daoFactory.getUserDAO());
+        UserDAO userDAO = daoFactory.getUserDAO();
+        TaskDAO taskDAO = daoFactory.getTaskDAO();
+        taskService = new TaskServiceImpl(taskDAO);
+        userService = new UserServiceImpl(taskDAO, userDAO);
     }
 
     public void createUser(String[] args) {
@@ -46,4 +50,6 @@ public class CommandStore {
     public void deleteUser(String[] args){
         userService.delete(args);
     }
+
+    public void createUserAndTask(String[] args) {userService.createUserAndAssignTask(args);}
 }

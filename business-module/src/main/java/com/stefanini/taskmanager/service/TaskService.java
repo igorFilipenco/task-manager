@@ -2,7 +2,10 @@ package com.stefanini.taskmanager.service;
 
 import com.stefanini.taskmanager.entity.Task;
 
+
 public interface TaskService extends BasicService{
+    Task prepareTask(String[] args);
+
     /**
      * Creates new task and links with passed user
      *

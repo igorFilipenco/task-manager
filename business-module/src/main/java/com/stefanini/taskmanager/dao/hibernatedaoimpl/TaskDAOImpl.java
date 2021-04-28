@@ -7,6 +7,7 @@ import com.stefanini.taskmanager.entity.User;
 import com.stefanini.taskmanager.utils.HibernateUtil;
 import org.apache.log4j.Logger;
 import org.hibernate.Session;
+import org.hibernate.Transaction;
 
 import javax.persistence.Query;
 import java.util.List;
@@ -24,21 +25,31 @@ public class TaskDAOImpl implements TaskDAO {
         }
 
         User user = userDAO.getUserByUserName(userName);
+        Long newTaskId = 0L;
 
-        Session session = HibernateUtil.getSession();
-        session.beginTransaction();
+        Transaction transaction = null;
 
-        log.info("Task create: creating task");
+        try (Session session = HibernateUtil.getSession();) {
+            transaction = session.beginTransaction();
 
-        Long newTaskId = (Long) session.save(task);
+            log.info("Task create: creating task");
 
-        log.info("Task create: assigning task to user "  + userName);
+            newTaskId = (Long) session.save(task);
 
-        task.setId(newTaskId);
-        user.addTask(task);
+            log.info("Task create: assigning task to user " + userName);
 
-        session.saveOrUpdate(user);
-        session.getTransaction().commit();
+            task.setId(newTaskId);
+            user.addTask(task);
+
+            session.saveOrUpdate(user);
+            transaction.commit();
+        } catch (Exception e) {
+            if (transaction != null) {
+                transaction.rollback();
+                e.printStackTrace();
+            }
+            e.printStackTrace();
+        }
 
         return getOneById(newTaskId);
     }

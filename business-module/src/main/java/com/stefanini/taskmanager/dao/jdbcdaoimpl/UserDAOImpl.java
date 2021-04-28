@@ -1,6 +1,7 @@
 package com.stefanini.taskmanager.dao.jdbcdaoimpl;
 
 import com.stefanini.taskmanager.dao.UserDAO;
+import com.stefanini.taskmanager.entity.Task;
 import com.stefanini.taskmanager.entity.User;
 import com.stefanini.taskmanager.utils.DBConnectionManager;
 import org.apache.log4j.Logger;
@@ -60,6 +61,12 @@ public class UserDAOImpl implements UserDAO {
         }
 
         return getOneById(newUserId);
+    }
+
+    @Override
+    public User createUserAndAssignTask(User user, Task task) {
+        //TODO implement method
+        return  null;
     }
 
     @Override

@@ -25,7 +25,8 @@ public class CommandExecutionEnvironment {
                 new GetTasksListCommand(commandStore),
                 new GetTaskByUsernameCommand(commandStore),
                 new CompleteTaskCommand(commandStore),
-                new DeleteUserCommand(commandStore)
+                new DeleteUserCommand(commandStore),
+                new CreateUserAndTaskCommand(commandStore)
         );
 
         switch (task) {
@@ -55,6 +56,9 @@ public class CommandExecutionEnvironment {
             case DELETE_USER: {
                 commandExecutor.deleteUser(args);
                 break;
+            }
+            case CREATE_USER_AND_TASK:{
+                commandExecutor.createUserAndTask(args);
             }
             //TODO create command for task deletion
         }
