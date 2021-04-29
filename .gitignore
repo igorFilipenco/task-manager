@@ -6,4 +6,5 @@
 /.idea/*/**
 /business-module/.settings/*
 /business-module/.dbeaver/*
+/main-module/.dbeaver/*
 /main-module/.settings/*

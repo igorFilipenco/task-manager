@@ -23,7 +23,7 @@
     </properties>
 
     <dependencies>
-        <!--        db and migration-->
+        <!--        db, orm, migrations-->
         <dependency>
             <groupId>mysql</groupId>
             <artifactId>mysql-connector-java</artifactId>

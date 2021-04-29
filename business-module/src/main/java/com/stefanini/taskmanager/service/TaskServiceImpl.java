@@ -1,6 +1,5 @@
 package com.stefanini.taskmanager.service;
 
-
 import com.stefanini.taskmanager.dao.TaskDAO;
 import com.stefanini.taskmanager.entity.Task;
 import com.stefanini.taskmanager.utils.ParamsExtractor;

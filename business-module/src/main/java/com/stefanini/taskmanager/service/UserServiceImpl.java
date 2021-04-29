@@ -1,15 +1,14 @@
 package com.stefanini.taskmanager.service;
 
-
 import com.stefanini.taskmanager.dao.TaskDAO;
 import com.stefanini.taskmanager.dao.UserDAO;
-import com.stefanini.taskmanager.entity.Task;
 import com.stefanini.taskmanager.entity.User;
 import com.stefanini.taskmanager.utils.ParamsExtractor;
 import org.apache.log4j.Logger;
 
 import java.util.List;
 import java.util.Objects;
+
 
 public class UserServiceImpl implements UserService {
     private static final Logger log = Logger.getLogger(UserServiceImpl.class);
