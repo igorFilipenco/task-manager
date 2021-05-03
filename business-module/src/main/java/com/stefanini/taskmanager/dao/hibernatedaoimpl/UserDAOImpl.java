@@ -1,7 +1,6 @@
 package com.stefanini.taskmanager.dao.hibernatedaoimpl;
 
 import com.stefanini.taskmanager.annotation.Loggable;
-import com.stefanini.taskmanager.dao.TaskDAO;
 import com.stefanini.taskmanager.dao.UserDAO;
 import com.stefanini.taskmanager.entity.Task;
 import com.stefanini.taskmanager.entity.User;
@@ -17,8 +16,8 @@ import java.util.Objects;
 
 public class UserDAOImpl implements UserDAO {
     private static final Logger log = Logger.getLogger(UserDAOImpl.class);
-    private static final TaskDAO taskDAO = new TaskDAOImpl();
 
+    @Loggable
     @Override
     public User create(User user) {
         String userName = user.getUserName();
@@ -38,6 +37,7 @@ public class UserDAOImpl implements UserDAO {
         return getOneById(newUserId);
     }
 
+    @Loggable
     @Override
     public User createUserAndAssignTask(User user, Task task) {
         String userName = user.getUserName();
@@ -80,8 +80,6 @@ public class UserDAOImpl implements UserDAO {
     @Loggable
     @Override
     public List<User> getList() {
-        log.info("User get list: getting users list");
-
         Session session = HibernateUtil.getSession();
         Query query = session.createQuery("FROM User");
         List<User> userList = query.getResultList();
@@ -89,6 +87,7 @@ public class UserDAOImpl implements UserDAO {
         return userList;
     }
 
+    @Loggable
     @Override
     public User getOneById(Long userId) {
         if (Objects.isNull(userId) || userId < 1) {
@@ -113,6 +112,7 @@ public class UserDAOImpl implements UserDAO {
         return user;
     }
 
+    @Loggable
     @Override
     public User getUserByUserName(String userName) {
         if (Objects.isNull(userName)) {
@@ -140,6 +140,7 @@ public class UserDAOImpl implements UserDAO {
         return user;
     }
 
+    @Loggable
     @Override
     public void deleteAllUsers() {
         Session session = HibernateUtil.getSession();
@@ -154,6 +155,7 @@ public class UserDAOImpl implements UserDAO {
         session.getTransaction().commit();
     }
 
+    @Loggable
     @Override
     public User delete(Long userId) {
         User userToDelete = getOneById(userId);

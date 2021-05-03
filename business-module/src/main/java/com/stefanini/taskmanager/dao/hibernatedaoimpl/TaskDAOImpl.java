@@ -1,5 +1,6 @@
 package com.stefanini.taskmanager.dao.hibernatedaoimpl;
 
+import com.stefanini.taskmanager.annotation.Loggable;
 import com.stefanini.taskmanager.dao.TaskDAO;
 import com.stefanini.taskmanager.dao.UserDAO;
 import com.stefanini.taskmanager.entity.Task;
@@ -18,6 +19,7 @@ public class TaskDAOImpl implements TaskDAO {
     private static final Logger log = Logger.getLogger(TaskDAOImpl.class);
     private static final UserDAO userDAO = new UserDAOImpl();
 
+    @Loggable
     @Override
     public Task create(Task task, String userName) {
         if (Objects.isNull(userName) || Objects.isNull(task)) {
@@ -54,6 +56,7 @@ public class TaskDAOImpl implements TaskDAO {
         return getOneById(newTaskId);
     }
 
+    @Loggable
     @Override
     public Task getOneById(Long taskId) {
         if (Objects.isNull(taskId) || taskId < 1) {
@@ -78,11 +81,13 @@ public class TaskDAOImpl implements TaskDAO {
         return task;
     }
 
+    @Loggable
     @Override
     public List<Task> getTasksByUsername(String userName) {
         return null;
     }
 
+    @Loggable
     @Override
     public Task getTaskByTitle(String title) {
         if (Objects.isNull(title)) {
@@ -107,6 +112,7 @@ public class TaskDAOImpl implements TaskDAO {
         return task;
     }
 
+    @Loggable
     @Override
     public List<Task> getList() {
         log.info("Task get list: getting tasks list");
@@ -119,6 +125,7 @@ public class TaskDAOImpl implements TaskDAO {
         return taskList;
     }
 
+    @Loggable
     @Override
     public void completeTask(String userName, String taskTitle) {
         Session session = HibernateUtil.getSession();

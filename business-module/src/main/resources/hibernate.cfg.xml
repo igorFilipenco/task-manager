@@ -13,7 +13,7 @@
 
         <!--service params-->
         <property name="show_sql">false</property>
-        <property name="format_sql">true</property>
+        <property name="format_sql">false</property>
         <property name="hbm2ddl.auto">validate</property>
         <property name="connection.pool_size">5</property>
         <property name="current_session_context_class">thread</property>

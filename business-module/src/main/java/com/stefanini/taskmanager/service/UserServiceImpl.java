@@ -1,5 +1,6 @@
 package com.stefanini.taskmanager.service;
 
+import com.stefanini.taskmanager.annotation.Loggable;
 import com.stefanini.taskmanager.dao.TaskDAO;
 import com.stefanini.taskmanager.dao.UserDAO;
 import com.stefanini.taskmanager.entity.User;
@@ -20,6 +21,7 @@ public class UserServiceImpl implements UserService {
         this.taskService = new TaskServiceImpl(taskDAO);
     }
 
+    @Loggable
     public static User prepareUser(String[] args) {
         User user = new User();
         String userName = ParamsExtractor.getParamFromArg(args, ParamsExtractor.USERNAME_FLAG);
@@ -32,6 +34,7 @@ public class UserServiceImpl implements UserService {
         return user;
     }
 
+    @Loggable
     @Override
     public void createUser(String[] args) {
         User user = prepareUser(args);
@@ -40,12 +43,14 @@ public class UserServiceImpl implements UserService {
         log.info("User create: created user data " + newUser);
     }
 
+    @Loggable
     @Override
     public void createUserAndAssignTask(String[] args) {
         createUser(args);
         taskService.createTask(args);
     }
 
+    @Loggable
     @Override
     public void getList() {
         List<User> userList = userDAO.getList();
@@ -57,6 +62,7 @@ public class UserServiceImpl implements UserService {
         }
     }
 
+    @Loggable
     @Override
     public void delete(String[] args) {
         String userName = ParamsExtractor.getParamFromArg(args, ParamsExtractor.USERNAME_FLAG);
