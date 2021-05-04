@@ -3,6 +3,7 @@ package com.stefanini.taskmanager.service;
 import com.stefanini.taskmanager.annotation.Loggable;
 import com.stefanini.taskmanager.dao.TaskDAO;
 import com.stefanini.taskmanager.dao.UserDAO;
+import com.stefanini.taskmanager.entity.Task;
 import com.stefanini.taskmanager.entity.User;
 import com.stefanini.taskmanager.utils.ParamsExtractor;
 import org.apache.log4j.Logger;
@@ -21,7 +22,6 @@ public class UserServiceImpl implements UserService {
         this.taskService = new TaskServiceImpl(taskDAO);
     }
 
-    @Loggable
     public static User prepareUser(String[] args) {
         User user = new User();
         String userName = ParamsExtractor.getParamFromArg(args, ParamsExtractor.USERNAME_FLAG);
@@ -46,8 +46,10 @@ public class UserServiceImpl implements UserService {
     @Loggable
     @Override
     public void createUserAndAssignTask(String[] args) {
-        createUser(args);
-        taskService.createTask(args);
+        User user = prepareUser(args);
+        Task task = taskService.prepareTask(args);
+
+        userDAO.createUserAndAssignTask(user, task);
     }
 
     @Loggable

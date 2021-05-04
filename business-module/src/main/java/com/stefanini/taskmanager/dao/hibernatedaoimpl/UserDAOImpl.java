@@ -1,6 +1,7 @@
 package com.stefanini.taskmanager.dao.hibernatedaoimpl;
 
 import com.stefanini.taskmanager.annotation.Loggable;
+import com.stefanini.taskmanager.annotation.Notifyable;
 import com.stefanini.taskmanager.dao.UserDAO;
 import com.stefanini.taskmanager.entity.Task;
 import com.stefanini.taskmanager.entity.User;
@@ -37,7 +38,7 @@ public class UserDAOImpl implements UserDAO {
         return getOneById(newUserId);
     }
 
-    @Loggable
+    @Notifyable
     @Override
     public User createUserAndAssignTask(User user, Task task) {
         String userName = user.getUserName();
