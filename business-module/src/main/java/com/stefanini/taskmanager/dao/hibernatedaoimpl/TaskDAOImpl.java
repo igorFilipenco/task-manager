@@ -11,6 +11,9 @@ import org.hibernate.Session;
 import org.hibernate.Transaction;
 
 import javax.persistence.Query;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Root;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
@@ -67,8 +70,17 @@ public class TaskDAOImpl implements TaskDAO {
 
         Task task = null;
         Session session = HibernateUtil.getSession();
-        Query query = session.createQuery("FROM Task WHERE id=" + taskId);
-        List<Task> tasks = query.getResultList();
+        CriteriaBuilder builder = session.getCriteriaBuilder();
+        CriteriaQuery<Task> criteria = builder.createQuery(Task.class);
+        Root<Task> root = criteria.from(Task.class);
+
+        criteria
+                .select(root)
+                .where(builder.equal(root.get("id"), taskId));
+
+        List<Task> tasks = session
+                .createQuery(criteria)
+                .getResultList();
 
         if (tasks.size() > 0) {
             task = tasks.get(0);
@@ -98,8 +110,17 @@ public class TaskDAOImpl implements TaskDAO {
 
         Task task = null;
         Session session = HibernateUtil.getSession();
-        Query query = session.createQuery("From Task  WHERE title=" + title);
-        List<Task> tasks = query.getResultList();
+        CriteriaBuilder builder = session.getCriteriaBuilder();
+        CriteriaQuery<Task> criteria = builder.createQuery(Task.class);
+        Root<Task> root = criteria.from(Task.class);
+
+        criteria
+                .select(root)
+                .where(builder.equal(root.get("title"), title));
+
+        List<Task> tasks = session
+                .createQuery(criteria)
+                .getResultList();
 
         if (tasks.size() > 0) {
             task = tasks.get(0);
@@ -118,9 +139,14 @@ public class TaskDAOImpl implements TaskDAO {
         log.info("Task get list: getting tasks list");
 
         Session session = HibernateUtil.getSession();
-        session.beginTransaction();
-        Query query = session.createQuery("FROM Task");
-        List<Task> taskList = query.getResultList();
+        CriteriaBuilder builder = session.getCriteriaBuilder();
+        CriteriaQuery<Task> criteria = builder.createQuery(Task.class);
+        Root<Task> root = criteria.from(Task.class);
+        criteria.select(root);
+
+        List<Task> taskList = session
+                .createQuery(criteria)
+                .getResultList();
 
         return taskList;
     }

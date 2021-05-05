@@ -11,6 +11,9 @@ import org.hibernate.Session;
 import org.hibernate.Transaction;
 
 import javax.persistence.Query;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Root;
 import java.util.List;
 import java.util.Objects;
 
@@ -82,10 +85,16 @@ public class UserDAOImpl implements UserDAO {
     @Override
     public List<User> getList() {
         Session session = HibernateUtil.getSession();
-        Query query = session.createQuery("FROM User");
-        List<User> userList = query.getResultList();
+        CriteriaBuilder builder = session.getCriteriaBuilder();
+        CriteriaQuery<User> criteria = builder.createQuery(User.class);
+        Root<User> root = criteria.from(User.class);
+        criteria.select(root);
 
-        return userList;
+        List<User> usersList = session
+                .createQuery(criteria)
+                .getResultList();
+
+        return usersList;
     }
 
     @Loggable
@@ -99,8 +108,15 @@ public class UserDAOImpl implements UserDAO {
 
         User user = null;
         Session session = HibernateUtil.getSession();
-        Query query = session.createQuery("FROM User WHERE id=" + userId);
-        List<User> users = query.getResultList();
+        CriteriaBuilder builder = session.getCriteriaBuilder();
+        CriteriaQuery<User> criteria = builder.createQuery(User.class);
+        Root<User> root = criteria.from(User.class);
+        criteria
+                .select(root)
+                .where(builder.equal(root.get("id"), userId));
+        List<User> users = session
+                .createQuery(criteria)
+                .getResultList();
 
         if (users.size() > 0) {
             user = users.get(0);
@@ -124,9 +140,15 @@ public class UserDAOImpl implements UserDAO {
 
         User user = null;
         Session session = HibernateUtil.getSession();
-        Query query = session.createQuery("From User U WHERE U.userName = :userName");
-        query.setParameter("userName", userName);
-        List<User> users = query.getResultList();
+        CriteriaBuilder builder = session.getCriteriaBuilder();
+        CriteriaQuery<User> criteria = builder.createQuery(User.class);
+        Root<User> root = criteria.from(User.class);
+        criteria
+                .select(root)
+                .where(builder.equal(root.get("userName"), userName));
+        List<User> users = session
+                .createQuery(criteria)
+                .getResultList();
 
         if (users.size() > 0) {
             user = users.get(0);
