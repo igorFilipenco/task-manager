@@ -12,7 +12,7 @@ import java.util.List;
 import java.util.Objects;
 
 
-public class UserDAOImpl implements UserDAO {
+public class UserDAOImpl extends AbstractDAOImpl<User> implements UserDAO {
     private static final Logger log = Logger.getLogger(UserDAOImpl.class);
 
     @Override
@@ -248,7 +248,7 @@ public class UserDAOImpl implements UserDAO {
     }
 
     @Override
-    public void deleteAllUsers() {
+    public void deleteAll() {
         String query = "DELETE FROM user";
         Connection connection;
         Statement statement;

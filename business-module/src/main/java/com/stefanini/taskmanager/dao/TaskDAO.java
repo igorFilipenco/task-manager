@@ -1,6 +1,5 @@
 package com.stefanini.taskmanager.dao;
 
-import com.mysql.cj.Session;
 import com.stefanini.taskmanager.entity.Task;
 
 import java.util.List;
@@ -14,7 +13,7 @@ public interface TaskDAO extends AbstractDAO<Task>{
      * @param userName is necessary to create link between inserted task and existing user
      * @author igor
      */
-    Task create(Task task, String userName);
+    Task createAndAssignTask(Task task, String userName);
 
     /**
      * Method searches tasks which were assigned to concrete user
@@ -44,12 +43,4 @@ public interface TaskDAO extends AbstractDAO<Task>{
      * @author igor
      */
     void completeTask(String userName, String taskTitle);
-
-    /**
-     * Removes all tasks from table and all records from relation table between user and task.
-     * This is a service method usually used for preparing tests
-     *
-     * @author igor
-     */
-    void deleteAllTasks();
 }

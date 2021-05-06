@@ -33,7 +33,7 @@ public class TaskServiceImpl implements TaskService {
         String userName = ParamsExtractor.getParamFromArg(args, ParamsExtractor.USERNAME_FLAG);
         Task task = prepareTask(args);
 
-        taskDAO.create(task, userName);
+        taskDAO.create(task);
     }
 
     @Override

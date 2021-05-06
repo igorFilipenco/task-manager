@@ -38,9 +38,17 @@ public class UserServiceImpl implements UserService {
     @Override
     public void createUser(String[] args) {
         User user = prepareUser(args);
+        User existingUser = userDAO.getUserByUserName(user.getUserName());
 
-        User newUser = userDAO.create(user);
-        log.info("User create: created user data " + newUser);
+        if (Objects.isNull(existingUser)) {
+            log.info("User create: creating new user with username" + user.getUserName());
+
+            User newUser = userDAO.create(user);
+
+            log.info("User create: created user data " + newUser);
+        } else {
+            log.info("Error: user with username " + existingUser.getUserName() + " already exists");
+        }
     }
 
     @Loggable

@@ -2,7 +2,25 @@ package com.stefanini.taskmanager.dao;
 
 import java.util.List;
 
+
 public interface AbstractDAO<T> {
+    /**
+     * Inserts new entity as record to table
+     *
+     * @param entity <T> entity
+     * @return creted entity
+     * @author igor
+     */
+    T create(T entity);
+
+    /**
+     * Fetches instance by id
+     *
+     * @return T entity returns fetched entity
+     * @author igor
+     */
+    T getOneById(Long id);
+
     /**
      * Returns a list off all records from entity table
      *
@@ -20,10 +38,8 @@ public interface AbstractDAO<T> {
     T delete(Long id);
 
     /**
-     * Fetches instance by id
-     *
-     * @return T entity returns fetched entity
+     * Method deletes all records from table
      * @author igor
      */
-    T getOneById(Long id);
+    void deleteAll();
 }

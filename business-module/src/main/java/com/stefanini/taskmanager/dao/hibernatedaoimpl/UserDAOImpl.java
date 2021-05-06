@@ -10,7 +10,6 @@ import org.apache.log4j.Logger;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 
-import javax.persistence.Query;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
@@ -18,27 +17,11 @@ import java.util.List;
 import java.util.Objects;
 
 
-public class UserDAOImpl implements UserDAO {
+public class UserDAOImpl extends AbstractDAOImpl<User> implements UserDAO {
     private static final Logger log = Logger.getLogger(UserDAOImpl.class);
 
-    @Loggable
-    @Override
-    public User create(User user) {
-        String userName = user.getUserName();
-        Session session = HibernateUtil.getSession();
-        session.beginTransaction();
-        User existingUser = getUserByUserName(userName);
-        Long newUserId = null;
-
-        if (Objects.isNull(existingUser)) {
-            log.info("User create: creating new user with username" + userName);
-            newUserId = (Long) session.save(user);
-            session.getTransaction().commit();
-        } else {
-            log.info("Error: user with username " + userName + " already exists");
-        }
-
-        return getOneById(newUserId);
+    {
+        super.setPersistentClass(User.class);
     }
 
     @Notifyable
@@ -83,54 +66,6 @@ public class UserDAOImpl implements UserDAO {
 
     @Loggable
     @Override
-    public List<User> getList() {
-        Session session = HibernateUtil.getSession();
-        CriteriaBuilder builder = session.getCriteriaBuilder();
-        CriteriaQuery<User> criteria = builder.createQuery(User.class);
-        Root<User> root = criteria.from(User.class);
-        criteria.select(root);
-
-        List<User> usersList = session
-                .createQuery(criteria)
-                .getResultList();
-
-        return usersList;
-    }
-
-    @Loggable
-    @Override
-    public User getOneById(Long userId) {
-        if (Objects.isNull(userId) || userId < 1) {
-            throw new NullPointerException();
-        }
-
-        log.info("User search: Search for user with id " + userId);
-
-        User user = null;
-        Session session = HibernateUtil.getSession();
-        CriteriaBuilder builder = session.getCriteriaBuilder();
-        CriteriaQuery<User> criteria = builder.createQuery(User.class);
-        Root<User> root = criteria.from(User.class);
-        criteria
-                .select(root)
-                .where(builder.equal(root.get("id"), userId));
-        List<User> users = session
-                .createQuery(criteria)
-                .getResultList();
-
-        if (users.size() > 0) {
-            user = users.get(0);
-
-            log.info("User search: found user " + user);
-        } else {
-            log.info("User search: user with id " + userId + " not found");
-        }
-
-        return user;
-    }
-
-    @Loggable
-    @Override
     public User getUserByUserName(String userName) {
         if (Objects.isNull(userName)) {
             throw new NullPointerException();
@@ -161,40 +96,5 @@ public class UserDAOImpl implements UserDAO {
         session.close();
 
         return user;
-    }
-
-    @Loggable
-    @Override
-    public void deleteAllUsers() {
-        Session session = HibernateUtil.getSession();
-
-        if (session.getTransaction().isActive()) {
-            session.getTransaction().commit();
-        }
-
-        session.beginTransaction();
-        Query query = session.createQuery("DELETE FROM User");
-        query.executeUpdate();
-        session.getTransaction().commit();
-    }
-
-    @Loggable
-    @Override
-    public User delete(Long userId) {
-        User userToDelete = getOneById(userId);
-
-        if (Objects.nonNull(userToDelete)) {
-            log.info("User delete: deleting user with id= " + userId);
-
-            Session session = HibernateUtil.getSession();
-            session.beginTransaction();
-            Query query = session.createQuery("DELETE FROM User WHERE id=" + userId);
-            query.executeUpdate();
-            session.getTransaction().commit();
-
-            log.info("User delete: user with id=" + userId + " was deleted");
-        }
-
-        return userToDelete;
     }
 }

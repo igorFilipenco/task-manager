@@ -10,7 +10,6 @@ import org.apache.log4j.Logger;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 
-import javax.persistence.Query;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
@@ -18,13 +17,18 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 
-public class TaskDAOImpl implements TaskDAO {
+
+public class TaskDAOImpl extends AbstractDAOImpl<Task> implements TaskDAO {
     private static final Logger log = Logger.getLogger(TaskDAOImpl.class);
     private static final UserDAO userDAO = new UserDAOImpl();
 
+    {
+        super.setPersistentClass(Task.class);
+    }
+
     @Loggable
     @Override
-    public Task create(Task task, String userName) {
+    public Task createAndAssignTask(Task task, String userName) {
         if (Objects.isNull(userName) || Objects.isNull(task)) {
             log.error("Task assign: wrong parameters to assign task. Task or username is null");
         }
@@ -57,40 +61,6 @@ public class TaskDAOImpl implements TaskDAO {
         }
 
         return getOneById(newTaskId);
-    }
-
-    @Loggable
-    @Override
-    public Task getOneById(Long taskId) {
-        if (Objects.isNull(taskId) || taskId < 1) {
-            throw new NullPointerException();
-        }
-
-        log.info("Task search: Search for task with id " + taskId);
-
-        Task task = null;
-        Session session = HibernateUtil.getSession();
-        CriteriaBuilder builder = session.getCriteriaBuilder();
-        CriteriaQuery<Task> criteria = builder.createQuery(Task.class);
-        Root<Task> root = criteria.from(Task.class);
-
-        criteria
-                .select(root)
-                .where(builder.equal(root.get("id"), taskId));
-
-        List<Task> tasks = session
-                .createQuery(criteria)
-                .getResultList();
-
-        if (tasks.size() > 0) {
-            task = tasks.get(0);
-
-            log.info("Task search: found task " + task);
-        } else {
-            log.info("Task search: task with id " + taskId + " not found");
-        }
-
-        return task;
     }
 
     @Loggable
@@ -135,24 +105,6 @@ public class TaskDAOImpl implements TaskDAO {
 
     @Loggable
     @Override
-    public List<Task> getList() {
-        log.info("Task get list: getting tasks list");
-
-        Session session = HibernateUtil.getSession();
-        CriteriaBuilder builder = session.getCriteriaBuilder();
-        CriteriaQuery<Task> criteria = builder.createQuery(Task.class);
-        Root<Task> root = criteria.from(Task.class);
-        criteria.select(root);
-
-        List<Task> taskList = session
-                .createQuery(criteria)
-                .getResultList();
-
-        return taskList;
-    }
-
-    @Loggable
-    @Override
     public void completeTask(String userName, String taskTitle) {
         Session session = HibernateUtil.getSession();
 
@@ -180,40 +132,5 @@ public class TaskDAOImpl implements TaskDAO {
         } else {
             System.out.println("Task complete: this user does not have tasks");
         }
-    }
-
-    @Override
-    public void deleteAllTasks() {
-        Session session = HibernateUtil.getSession();
-
-        log.info("Tasks delete: deleting all tasks");
-
-        if (session.getTransaction().isActive()) {
-            session.getTransaction().commit();
-        }
-
-        session.beginTransaction();
-        Query query = session.createQuery("delete from Task ");
-        query.executeUpdate();
-        session.getTransaction().commit();
-    }
-
-    @Override
-    public Task delete(Long taskId) {
-        Task taskToDelete = getOneById(taskId);
-
-        if (Objects.nonNull(taskToDelete)) {
-            log.info("Task delete: deleting task with id= " + taskId);
-
-            Session session = HibernateUtil.getSession();
-            session.beginTransaction();
-            Query query = session.createQuery("DELETE FROM Task WHERE id=" + taskId);
-            query.executeUpdate();
-            session.getTransaction().commit();
-
-            log.info("Task delete: task with id=" + taskId + " was deleted");
-        }
-
-        return taskToDelete;
     }
 }

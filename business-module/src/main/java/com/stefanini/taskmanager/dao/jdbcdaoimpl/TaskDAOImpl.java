@@ -19,7 +19,7 @@ public class TaskDAOImpl implements TaskDAO {
     private final UserDAO userDAO = new UserDAOImpl();
 
     @Override
-    public Task create(Task task, String userName) {
+    public Task createAndAssignTask(Task task, String userName) {
         User user = userDAO.getUserByUserName(userName);
         Task newTask = null;
         Connection connection = null;
@@ -82,7 +82,6 @@ public class TaskDAOImpl implements TaskDAO {
 
     @Override
     public List<Task> getTasksByUsername(String userName) {
-
         User user = userDAO.getUserByUserName(userName);
         List<Task> userTasks = new ArrayList<>();
         Connection connection;
@@ -114,6 +113,11 @@ public class TaskDAOImpl implements TaskDAO {
     @Override
     public Task getTaskByTitle(String title) {
         //TODO write this method
+        return null;
+    }
+
+    @Override
+    public Task create(Task entity) {
         return null;
     }
 
@@ -225,7 +229,7 @@ public class TaskDAOImpl implements TaskDAO {
     }
 
     @Override
-    public void deleteAllTasks() {
+    public void deleteAll() {
         String query = "DELETE FROM task";
         String linkQuery = "DELETE FROM user_task";
         Connection connection;
