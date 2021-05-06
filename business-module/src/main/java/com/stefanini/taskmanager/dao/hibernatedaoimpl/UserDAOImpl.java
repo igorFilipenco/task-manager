@@ -15,6 +15,7 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 
 
 public class UserDAOImpl extends AbstractDAOImpl<User> implements UserDAO {
@@ -24,7 +25,7 @@ public class UserDAOImpl extends AbstractDAOImpl<User> implements UserDAO {
         super.setPersistentClass(User.class);
     }
 
-    @Notifyable
+    //@Notifyable
     @Override
     public User createUserAndAssignTask(User user, Task task) {
         String userName = user.getUserName();
@@ -78,16 +79,18 @@ public class UserDAOImpl extends AbstractDAOImpl<User> implements UserDAO {
         CriteriaBuilder builder = session.getCriteriaBuilder();
         CriteriaQuery<User> criteria = builder.createQuery(User.class);
         Root<User> root = criteria.from(User.class);
-        criteria
-                .select(root)
-                .where(builder.equal(root.get("userName"), userName));
+        criteria.select(root);
         List<User> users = session
                 .createQuery(criteria)
                 .getResultList();
 
-        if (users.size() > 0) {
-            user = users.get(0);
+        user = users
+                .stream()
+                .filter(usr->usr.getUserName().equals(userName))
+                .findFirst()
+                .orElse(null);
 
+        if (Objects.nonNull(user)) {
             log.info("User search: found user " + user);
         } else {
             log.info("User search: user with username " + userName + " not found");

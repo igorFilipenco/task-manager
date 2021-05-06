@@ -84,17 +84,19 @@ public class TaskDAOImpl extends AbstractDAOImpl<Task> implements TaskDAO {
         CriteriaQuery<Task> criteria = builder.createQuery(Task.class);
         Root<Task> root = criteria.from(Task.class);
 
-        criteria
-                .select(root)
-                .where(builder.equal(root.get("title"), title));
+        criteria.select(root);
 
         List<Task> tasks = session
                 .createQuery(criteria)
                 .getResultList();
 
-        if (tasks.size() > 0) {
-            task = tasks.get(0);
+        task = tasks
+                .stream()
+                .filter(usr->usr.getTitle().equals(title))
+                .findFirst()
+                .orElse(null);
 
+        if (Objects.nonNull(task)) {
             log.info("Task search: found task " + task);
         } else {
             log.info("Task search: task with title " + title + " not found");
