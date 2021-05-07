@@ -74,7 +74,7 @@ public class UserDAOImpl extends AbstractDAOImpl<User> implements UserDAO {
 
         log.info("User search: Search for user with username " + userName);
 
-        User user = null;
+        User user;
         Session session = HibernateUtil.getSession();
         CriteriaBuilder builder = session.getCriteriaBuilder();
         CriteriaQuery<User> criteria = builder.createQuery(User.class);

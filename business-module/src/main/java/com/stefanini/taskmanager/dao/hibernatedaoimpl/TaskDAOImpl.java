@@ -130,7 +130,6 @@ public class TaskDAOImpl extends AbstractDAOImpl<Task> implements TaskDAO {
             session.getTransaction().commit();
 
             System.out.println("Task complete: Task with title " + taskTitle + " has been removed");
-
         } else {
             System.out.println("Task complete: this user does not have tasks");
         }

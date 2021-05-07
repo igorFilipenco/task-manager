@@ -5,8 +5,10 @@ import com.stefanini.taskmanager.dao.TaskDAO;
 import com.stefanini.taskmanager.dao.UserDAO;
 import com.stefanini.taskmanager.entity.Task;
 import com.stefanini.taskmanager.entity.User;
+import com.stefanini.taskmanager.utils.HibernateUtil;
 import com.stefanini.taskmanager.utils.ParamsExtractor;
 import org.apache.log4j.Logger;
+import org.hibernate.Session;
 
 import java.util.List;
 import java.util.Objects;
@@ -20,6 +22,10 @@ public class UserServiceImpl implements UserService {
     public UserServiceImpl(TaskDAO taskDAO, UserDAO userDAO) {
         this.userDAO = userDAO;
         this.taskService = new TaskServiceImpl(taskDAO);
+    }
+
+    protected Session getCurrentSession() {
+        return HibernateUtil.getSession();
     }
 
     public static User prepareUser(String[] args) {
@@ -37,6 +43,8 @@ public class UserServiceImpl implements UserService {
     @Loggable
     @Override
     public void createUser(String[] args) {
+        Session session = getCurrentSession();
+
         User user = prepareUser(args);
         User existingUser = userDAO.getUserByUserName(user.getUserName());
 
