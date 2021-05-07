@@ -8,7 +8,6 @@ import com.stefanini.taskmanager.entity.User;
 import com.stefanini.taskmanager.utils.HibernateUtil;
 import org.apache.log4j.Logger;
 import org.hibernate.Session;
-import org.hibernate.Transaction;
 
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
@@ -24,43 +23,6 @@ public class TaskDAOImpl extends AbstractDAOImpl<Task> implements TaskDAO {
 
     {
         super.setPersistentClass(Task.class);
-    }
-
-    @Loggable
-    @Override
-    public Task createAndAssignTask(Task task, String userName) {
-        if (Objects.isNull(userName) || Objects.isNull(task)) {
-            log.error("Task assign: wrong parameters to assign task. Task or username is null");
-        }
-
-        User user = userDAO.getUserByUserName(userName);
-        Long newTaskId = 0L;
-
-        Transaction transaction = null;
-
-        try (Session session = HibernateUtil.getSession();) {
-            transaction = session.beginTransaction();
-
-            log.info("Task create: creating task");
-
-            newTaskId = (Long) session.save(task);
-
-            log.info("Task create: assigning task to user " + userName);
-
-            task.setId(newTaskId);
-            user.addTask(task);
-
-            session.saveOrUpdate(user);
-            transaction.commit();
-        } catch (Exception e) {
-            if (transaction != null) {
-                transaction.rollback();
-                e.printStackTrace();
-            }
-            e.printStackTrace();
-        }
-
-        return getOneById(newTaskId);
     }
 
     @Loggable
@@ -115,7 +77,7 @@ public class TaskDAOImpl extends AbstractDAOImpl<Task> implements TaskDAO {
         }
 
         session.beginTransaction();
-        User user = userDAO.getUserByUserName(userName);
+        User user = userDAO.getUserByUserName(userName, session);
         Task task = getTaskByTitle(taskTitle);
         Set<Task> userTasks = user.getTasks();
 
@@ -133,5 +95,18 @@ public class TaskDAOImpl extends AbstractDAOImpl<Task> implements TaskDAO {
         } else {
             System.out.println("Task complete: this user does not have tasks");
         }
+    }
+
+    @Loggable
+    @Override
+    public void assignTask(User user, Task task, Session session) {
+        if (Objects.isNull(user) || Objects.isNull(task)) {
+            log.error("Task assign: wrong parameters to assign task. Task or User is null");
+        }
+
+        user.addTask(task);
+        session.saveOrUpdate(user);
+
+        log.info("Task create: assigning task to user " + user.getUserName());
     }
 }

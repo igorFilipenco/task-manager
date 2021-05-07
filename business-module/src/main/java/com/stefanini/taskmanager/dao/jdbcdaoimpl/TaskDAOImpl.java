@@ -18,9 +18,8 @@ public class TaskDAOImpl implements TaskDAO {
     private static final Logger log = Logger.getLogger(TaskDAOImpl.class);
     private final UserDAO userDAO = new UserDAOImpl();
 
-    @Override
     public Task createAndAssignTask(Task task, String userName) {
-        User user = userDAO.getUserByUserName(userName);
+        User user = userDAO.getUserByUserName(userName, null);
         Task newTask = null;
         Connection connection = null;
         PreparedStatement taskStatement;
@@ -56,7 +55,7 @@ public class TaskDAOImpl implements TaskDAO {
             if (recordedTaskId < 0) {
                 log.error("Task create: can't retrieve created task id");
             } else {
-                newTask = getOneById(recordedTaskId);
+                newTask = getOneById(recordedTaskId, null);
             }
 
             String linkQuery = "INSERT INTO `user_task`(user_id, task_id) VALUES(?,?)";
@@ -82,7 +81,7 @@ public class TaskDAOImpl implements TaskDAO {
 
     @Override
     public List<Task> getTasksByUsername(String userName) {
-        User user = userDAO.getUserByUserName(userName);
+        User user = userDAO.getUserByUserName(userName, null);
         List<Task> userTasks = new ArrayList<>();
         Connection connection;
         Statement statement;
@@ -116,13 +115,14 @@ public class TaskDAOImpl implements TaskDAO {
         return null;
     }
 
+
     @Override
-    public Task create(Task entity) {
+    public Task create(Task entity, org.hibernate.Session session) {
         return null;
     }
 
     @Override
-    public Task getOneById(Long taskId) {
+    public Task getOneById(Long taskId, org.hibernate.Session session) {
         Task task = null;
         Connection connection;
         PreparedStatement statement;
@@ -158,7 +158,7 @@ public class TaskDAOImpl implements TaskDAO {
     }
 
     @Override
-    public List<Task> getList() {
+    public List<Task> getList(org.hibernate.Session session) {
         String query = "SELECT * FROM task";
         List<Task> taskList = new ArrayList<>();
         Connection connection;
@@ -187,7 +187,7 @@ public class TaskDAOImpl implements TaskDAO {
 
     @Override
     public void completeTask(String userName, String taskTitle) {
-        User user = userDAO.getUserByUserName(userName);
+        User user = userDAO.getUserByUserName(userName, null);
 
         if (user == null) {
             log.error("Task complete: user not found");
@@ -229,7 +229,12 @@ public class TaskDAOImpl implements TaskDAO {
     }
 
     @Override
-    public void deleteAll() {
+    public void assignTask(User user, Task task, org.hibernate.Session session) {
+
+    }
+
+    @Override
+    public void deleteAll(org.hibernate.Session session) {
         String query = "DELETE FROM task";
         String linkQuery = "DELETE FROM user_task";
         Connection connection;
@@ -249,7 +254,7 @@ public class TaskDAOImpl implements TaskDAO {
     }
 
     @Override
-    public Task delete(Long id) {
+    public Task delete(Long id, org.hibernate.Session session) {
         return null;
     }
 

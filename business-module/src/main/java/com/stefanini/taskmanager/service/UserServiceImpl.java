@@ -9,6 +9,7 @@ import com.stefanini.taskmanager.utils.HibernateUtil;
 import com.stefanini.taskmanager.utils.ParamsExtractor;
 import org.apache.log4j.Logger;
 import org.hibernate.Session;
+import org.hibernate.Transaction;
 
 import java.util.List;
 import java.util.Objects;
@@ -18,9 +19,11 @@ public class UserServiceImpl implements UserService {
     private static final Logger log = Logger.getLogger(UserServiceImpl.class);
     private final TaskService taskService;
     private final UserDAO userDAO;
+    private final TaskDAO taskDAO;
 
     public UserServiceImpl(TaskDAO taskDAO, UserDAO userDAO) {
         this.userDAO = userDAO;
+        this.taskDAO = taskDAO;
         this.taskService = new TaskServiceImpl(taskDAO);
     }
 
@@ -43,57 +46,112 @@ public class UserServiceImpl implements UserService {
     @Loggable
     @Override
     public void createUser(String[] args) {
-        Session session = getCurrentSession();
-
         User user = prepareUser(args);
-        User existingUser = userDAO.getUserByUserName(user.getUserName());
+        Transaction transaction = null;
 
-        if (Objects.isNull(existingUser)) {
-            log.info("User create: creating new user with username" + user.getUserName());
+        try (Session session = getCurrentSession()) {
+            User existingUser = userDAO.getUserByUserName(user.getUserName(), session);
 
-            User newUser = userDAO.create(user);
+            if (Objects.nonNull(existingUser)) {
+                log.info("Error: user with username " + existingUser.getUserName() + " already exists");
+                return;
+            }
 
-            log.info("User create: created user data " + newUser);
-        } else {
-            log.info("Error: user with username " + existingUser.getUserName() + " already exists");
+            transaction = session.beginTransaction();
+            User newUser = userDAO.create(user, session);
+
+            log.info("User create: created user " + newUser);
+
+            transaction.commit();
+        } catch (Exception e) {
+            if (transaction != null) {
+                transaction.rollback();
+                e.printStackTrace();
+            }
+
+            log.error("User create error: " + e.getMessage());
+        }
+    }
+
+    @Loggable
+    //@Notifyable
+    @Override
+    public void createUserAndAssignTask(String[] args) {
+        User user = prepareUser(args);
+        Task task = taskService.prepareTask(args);
+        Transaction transaction = null;
+
+        try (Session session = getCurrentSession()) {
+            transaction = session.beginTransaction();
+
+            User createdUser = userDAO.create(user, session);
+            Task createdTask = taskDAO.create(task, session);
+            taskDAO.assignTask(createdUser, createdTask, session);
+
+            session.getTransaction().commit();
+        } catch (Exception e) {
+            if (transaction != null) {
+                transaction.rollback();
+                log.error("User create and assign task error: " + e.getMessage());
+            }
         }
     }
 
     @Loggable
     @Override
-    public void createUserAndAssignTask(String[] args) {
-        User user = prepareUser(args);
-        Task task = taskService.prepareTask(args);
-
-        userDAO.createUserAndAssignTask(user, task);
-    }
-
-    @Loggable
-    @Override
     public void getList() {
-        List<User> userList = userDAO.getList();
+        try (Session session = getCurrentSession()) {
+            List<User> userList = userDAO.getList(session);
 
-        if (userList.size() == 0) {
-            log.info("Get users: No users were created");
-        } else {
-            userList.forEach(user -> log.info("Get users: " + user));
+            if (userList.size() == 0) {
+                log.info("Get users: No users were created");
+            } else {
+                userList.forEach(user -> log.info("Get users: " + user));
+            }
+        } catch (Exception e) {
+            log.error("Get users error: " + e.getMessage());
         }
     }
 
     @Loggable
     @Override
     public void delete(String[] args) {
-        String userName = ParamsExtractor.getParamFromArg(args, ParamsExtractor.USERNAME_FLAG);
-        User userToDelete = userDAO.getUserByUserName(userName);
+        Transaction transaction = null;
 
-        if (Objects.isNull(userToDelete)) {
-            log.error("User delete: user with username " + userName + " does not exist");
+        try (Session session = getCurrentSession()) {
+            String userName = ParamsExtractor.getParamFromArg(args, ParamsExtractor.USERNAME_FLAG);
+            User userToDelete = userDAO.getUserByUserName(userName, session);
 
-            return;
+            if (Objects.isNull(userToDelete)) {
+                log.error("User delete: user with username " + userName + " does not exist");
+
+                return;
+            }
+
+            session.beginTransaction();
+
+            User deletedUser = userDAO.delete(userToDelete.getId(), session);
+
+            log.info("User delete: user " + deletedUser + " deleted");
+            session.getTransaction().commit();
+        } catch (Exception e) {
+            if (transaction != null) {
+                transaction.rollback();
+                log.error("User delete error: " + e.getMessage());
+            }
         }
+    }
 
-        User deletedUser = userDAO.delete(userToDelete.getId());
+    @Loggable
+    public void deleteAll() {
+        try (Session session = getCurrentSession()) {
+            session.beginTransaction();
 
-        log.info("User delete: user " + deletedUser + " deleted");
+            userDAO.deleteAll(session);
+
+            session.getTransaction().commit();
+        } catch (Exception e) {
+            log.error("Delete users: " + e.getMessage());
+        }
     }
 }

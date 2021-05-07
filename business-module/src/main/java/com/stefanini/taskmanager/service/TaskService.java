@@ -1,6 +1,8 @@
 package com.stefanini.taskmanager.service;
 
 import com.stefanini.taskmanager.entity.Task;
+import com.stefanini.taskmanager.entity.User;
+import org.hibernate.Session;
 
 
 public interface TaskService extends BasicService{

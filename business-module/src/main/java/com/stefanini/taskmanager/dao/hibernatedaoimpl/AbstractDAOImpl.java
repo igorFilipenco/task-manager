@@ -1,7 +1,6 @@
 package com.stefanini.taskmanager.dao.hibernatedaoimpl;
 
 import com.stefanini.taskmanager.annotation.Loggable;
-import com.stefanini.taskmanager.utils.HibernateUtil;
 import org.apache.log4j.Logger;
 import org.hibernate.Session;
 
@@ -29,17 +28,16 @@ public abstract class AbstractDAOImpl<T extends Serializable> {
     }
 
     @Loggable
-    public T create(T entity) {
-        Session session = getCurrentSession();
-        session.beginTransaction();
-        Long newEntityId = (Long) session.save(entity);
-        session.getTransaction().commit();
+    public T create(T entity, Session session) {
+        LOGGER.info(className + " create: creating new " + className);
 
-        return getOneById(newEntityId);
+        Long newEntityId = (Long) session.save(entity);
+
+        return getOneById(newEntityId, session);
     }
 
     @Loggable
-    public T getOneById(Long entityId) {
+    public T getOneById(Long entityId, Session session) {
         if (entityId < 1) {
             throw new NullPointerException();
         }
@@ -48,7 +46,7 @@ public abstract class AbstractDAOImpl<T extends Serializable> {
 
         T entity;
 
-        entity = (T) getCurrentSession().get(entityClass, entityId);
+        entity = (T) session.get(entityClass, entityId);
 
         if (Objects.nonNull(entity)) {
             LOGGER.info(className + " search: found " + entity);
@@ -60,8 +58,7 @@ public abstract class AbstractDAOImpl<T extends Serializable> {
     }
 
     @Loggable
-    public List<T> getList() {
-        Session session = HibernateUtil.getSession();
+    public List<T> getList(Session session) {
         CriteriaBuilder builder = session.getCriteriaBuilder();
         CriteriaQuery<T> criteria = builder.createQuery(entityClass);
         Root<T> root = criteria.from(entityClass);
@@ -75,16 +72,13 @@ public abstract class AbstractDAOImpl<T extends Serializable> {
     }
 
     @Loggable
-    public T delete(Long entityId) {
-        T entityToDelete = getOneById(entityId);
+    public T delete(Long entityId, Session session) {
+        T entityToDelete = getOneById(entityId, session);
 
         if (Objects.nonNull(entityToDelete)) {
             LOGGER.info(className + " delete: deleting " + className + " with id= " + entityId);
 
-            Session session = getCurrentSession();
-            session.beginTransaction();
             session.delete(entityToDelete);
-            session.getTransaction().commit();
 
             LOGGER.info(className + " delete:" + className + " with id=" + entityId + " was deleted");
         }
@@ -93,17 +87,9 @@ public abstract class AbstractDAOImpl<T extends Serializable> {
     }
 
     @Loggable
-    public void deleteAll() {
+    public void deleteAll(Session session) {
         LOGGER.info(className + " delete: deleting all " + className + " records");
-
-        Session session = getCurrentSession();
-        session.beginTransaction();
         Query query = session.createQuery("DELETE FROM" + entityClass);
         query.executeUpdate();
-        session.getTransaction().commit();
-    }
-
-    protected Session getCurrentSession() {
-        return HibernateUtil.getSession();
     }
 }

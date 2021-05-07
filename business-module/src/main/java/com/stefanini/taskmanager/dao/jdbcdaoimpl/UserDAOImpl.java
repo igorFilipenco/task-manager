@@ -5,6 +5,7 @@ import com.stefanini.taskmanager.entity.Task;
 import com.stefanini.taskmanager.entity.User;
 import com.stefanini.taskmanager.utils.DBConnectionManager;
 import org.apache.log4j.Logger;
+import org.hibernate.Session;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -20,7 +21,7 @@ public class UserDAOImpl extends AbstractDAOImpl<User> implements UserDAO {
         String userName = user.getUserName();
         String firstName = user.getFirstName();
         String lastName = user.getLastName();
-        User duplicateUser = getUserByUserName(userName);
+        User duplicateUser = getUserByUserName(userName, null);
         long newUserId = 0;
         Connection connection = null;
         PreparedStatement statement;
@@ -64,9 +65,23 @@ public class UserDAOImpl extends AbstractDAOImpl<User> implements UserDAO {
     }
 
     @Override
-    public User createUserAndAssignTask(User user, Task task) {
-        //TODO implement method
-        return  null;
+    public User create(User entity, Session session) {
+        return null;
+    }
+
+    @Override
+    public User getOneById(Long id, Session session) {
+        return null;
+    }
+
+    @Override
+    public List<User> getList(Session session) {
+        return null;
+    }
+
+    @Override
+    public User delete(Long id, Session session) {
+        return null;
     }
 
     @Override
@@ -106,7 +121,7 @@ public class UserDAOImpl extends AbstractDAOImpl<User> implements UserDAO {
         return user;
     }
 
-    @Override
+
     public User getUserByUserName(String userName) {
         User user = null;
         Connection connection;
@@ -261,5 +276,10 @@ public class UserDAOImpl extends AbstractDAOImpl<User> implements UserDAO {
         } catch (SQLException e) {
             log.error("User error on delete all users due to - " + e.getMessage());
         }
+    }
+
+    @Override
+    public User getUserByUserName(String userName, Session session) {
+        return null;
     }
 }

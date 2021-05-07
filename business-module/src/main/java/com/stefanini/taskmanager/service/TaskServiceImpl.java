@@ -1,9 +1,13 @@
 package com.stefanini.taskmanager.service;
 
+import com.stefanini.taskmanager.annotation.Loggable;
 import com.stefanini.taskmanager.dao.TaskDAO;
 import com.stefanini.taskmanager.entity.Task;
+import com.stefanini.taskmanager.utils.HibernateUtil;
 import com.stefanini.taskmanager.utils.ParamsExtractor;
 import org.apache.log4j.Logger;
+import org.hibernate.Session;
+import org.hibernate.Transaction;
 
 import java.util.List;
 import java.util.Objects;
@@ -17,6 +21,10 @@ public class TaskServiceImpl implements TaskService {
         this.taskDAO = taskDAO;
     }
 
+    protected Session getCurrentSession() {
+        return HibernateUtil.getSession();
+    }
+
     @Override
     public Task prepareTask(String[] args) {
         Task task = new Task();
@@ -28,14 +36,24 @@ public class TaskServiceImpl implements TaskService {
         return task;
     }
 
+    @Loggable
     @Override
     public void createTask(String[] args) {
-        String userName = ParamsExtractor.getParamFromArg(args, ParamsExtractor.USERNAME_FLAG);
-        Task task = prepareTask(args);
+        try (Session session = getCurrentSession()) {
+            Task task = prepareTask(args);
+            Transaction transaction = session.beginTransaction();
 
-        taskDAO.create(task);
+            Task createdTask = taskDAO.create(task, session);
+
+            log.info("Task create: created task " + createdTask);
+
+            transaction.commit();
+        } catch (Exception e) {
+            log.error("Task create  error: " + e.getMessage());
+        }
     }
 
+    @Loggable
     @Override
     public void getTasksByUsername(String[] args) {
         String userName = ParamsExtractor.getParamFromArg(args, ParamsExtractor.USERNAME_FLAG);
@@ -48,6 +66,7 @@ public class TaskServiceImpl implements TaskService {
         }
     }
 
+    @Loggable
     @Override
     public Task getTaskByTitle(String[] args) {
         String taskTitle = ParamsExtractor.getParamFromArg(args, ParamsExtractor.TASK_TITLE_FLAG);
@@ -61,17 +80,23 @@ public class TaskServiceImpl implements TaskService {
         return task;
     }
 
+    @Loggable
     @Override
     public void getList() {
-        List<Task> taskList = taskDAO.getList();
+        try (Session session = getCurrentSession()) {
+            List<Task> taskList = taskDAO.getList(session);
 
-        if (taskList.size() == 0) {
-            log.info("Get tasks: no tasks created");
-        } else {
-            taskList.forEach(task -> log.info("Get tasks: " + task));
+            if (taskList.size() == 0) {
+                log.info("Get tasks: no tasks created");
+            } else {
+                taskList.forEach(task -> log.info("Get tasks: " + task));
+            }
+        } catch (Exception e) {
+            log.error("Get tasks error: " + e.getMessage());
         }
     }
 
+    @Loggable
     @Override
     public void completeTask(String[] args) {
         String userName = ParamsExtractor.getParamFromArg(args, ParamsExtractor.USERNAME_FLAG);
@@ -79,12 +104,30 @@ public class TaskServiceImpl implements TaskService {
         taskDAO.completeTask(userName, taskTitle);
     }
 
+    @Loggable
     @Override
     public void delete(String[] args) {
-        Task task = getTaskByTitle(args);
+        Transaction transaction = null;
 
-        if (Objects.nonNull(task)) {
-            Task deletedTask = taskDAO.delete(task.getId());
+        try (Session session = getCurrentSession()) {
+            Task task = getTaskByTitle(args);
+
+            if (Objects.isNull(task)) {
+                log.error("Task delete: task does not exits");
+                return;
+            }
+
+            session.beginTransaction();
+
+            Task deletedTask = taskDAO.delete(task.getId(), session);
+
+            log.info("Task delete: task " + deletedTask + " deleted");
+            session.getTransaction().commit();
+        } catch (Exception e) {
+            if (transaction != null) {
+                transaction.rollback();
+                log.error("User delete error: " + e.getMessage());
+            }
         }
     }
 }

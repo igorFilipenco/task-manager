@@ -26,7 +26,8 @@ public class CommandExecutionEnvironment {
                 new GetTaskByUsernameCommand(commandStore),
                 new CompleteTaskCommand(commandStore),
                 new DeleteUserCommand(commandStore),
-                new CreateUserAndTaskCommand(commandStore)
+                new CreateUserAndTaskCommand(commandStore),
+                new AssignTaskCommand(commandStore)
         );
 
         switch (task) {

@@ -30,12 +30,18 @@ public class ConcurrentCommandExecutionEnvironment {
                 new GetTaskByUsernameCommand(commandStore),
                 new CompleteTaskCommand(commandStore),
                 new DeleteUserCommand(commandStore),
-                new CreateUserAndTaskCommand(commandStore)
+                new CreateUserAndTaskCommand(commandStore),
+                new AssignTaskCommand(commandStore)
         );
 
         try {
             execService.submit(() -> {
                 commandExecutor.createUserAndTask(props);
+                log.info("11111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111");
+            }).get();
+
+            execService.submit(() -> {
+                commandExecutor.createUser(props);
                 log.info("11111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111");
             }).get();
 

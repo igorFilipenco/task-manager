@@ -1,20 +1,13 @@
 package com.stefanini.taskmanager.dao;
 
 import com.stefanini.taskmanager.entity.Task;
+import com.stefanini.taskmanager.entity.User;
+import org.hibernate.Session;
 
 import java.util.List;
 
 
 public interface TaskDAO extends AbstractDAO<Task>{
-    /**
-     * Method adds new task and assigns it on user
-     *
-     * @param task task entity provides field for inserting task record
-     * @param userName is necessary to create link between inserted task and existing user
-     * @author igor
-     */
-    Task createAndAssignTask(Task task, String userName);
-
     /**
      * Method searches tasks which were assigned to concrete user
      *
@@ -43,4 +36,12 @@ public interface TaskDAO extends AbstractDAO<Task>{
      * @author igor
      */
     void completeTask(String userName, String taskTitle);
+
+    /**
+     * Method adds link between user and task
+     * @param user User entity
+     * @param task Task entity
+     * @param session Session session - hibernate session
+     */
+    void assignTask(User user, Task task, Session session);
 }

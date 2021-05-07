@@ -55,4 +55,8 @@ public class CommandStore {
     public void createUserAndTask(String[] args) {
         userService.createUserAndAssignTask(args);
     }
+
+    public void assignTask(String[] args) {
+        taskService.createTask(args);
+    }
 }
