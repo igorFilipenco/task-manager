@@ -24,7 +24,7 @@ public interface TaskDAO extends AbstractDAO<Task>{
      * @return Task task can be empty, if task does not exist
      * @author igor
      */
-    Task getTaskByTitle(String title);
+    Task getTaskByTitle(String title, Session session);
 
     /**
      * Method removes link between user and task

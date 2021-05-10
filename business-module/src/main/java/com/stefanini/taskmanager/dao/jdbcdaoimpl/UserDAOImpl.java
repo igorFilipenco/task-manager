@@ -263,7 +263,7 @@ public class UserDAOImpl extends AbstractDAOImpl<User> implements UserDAO {
     }
 
     @Override
-    public void deleteAll() {
+    public void deleteAll(Session session) {
         String query = "DELETE FROM user";
         Connection connection;
         Statement statement;

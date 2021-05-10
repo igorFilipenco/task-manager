@@ -17,21 +17,21 @@ import java.util.Objects;
 
 public class UserServiceImpl implements UserService {
     private static final Logger log = Logger.getLogger(UserServiceImpl.class);
-    private final TaskService taskService;
+    private final TaskService taskService ;
     private final UserDAO userDAO;
     private final TaskDAO taskDAO;
 
     public UserServiceImpl(TaskDAO taskDAO, UserDAO userDAO) {
         this.userDAO = userDAO;
         this.taskDAO = taskDAO;
-        this.taskService = new TaskServiceImpl(taskDAO);
+        this.taskService = new TaskServiceImpl(taskDAO, userDAO);
     }
 
     protected Session getCurrentSession() {
         return HibernateUtil.getSession();
     }
-
-    public static User prepareUser(String[] args) {
+    @Override
+    public User prepareUser(String[] args) {
         User user = new User();
         String userName = ParamsExtractor.getParamFromArg(args, ParamsExtractor.USERNAME_FLAG);
         String firstName = ParamsExtractor.getParamFromArg(args, ParamsExtractor.FIRSTNAME_FLAG);

@@ -25,15 +25,13 @@ public class TaskDAOImpl extends AbstractDAOImpl<Task> implements TaskDAO {
         super.setPersistentClass(Task.class);
     }
 
-    @Loggable
     @Override
     public List<Task> getTasksByUsername(String userName) {
         return null;
     }
 
-    @Loggable
     @Override
-    public Task getTaskByTitle(String title) {
+    public Task getTaskByTitle(String title, Session session) {
         if (Objects.isNull(title)) {
             throw new NullPointerException();
         }
@@ -41,7 +39,6 @@ public class TaskDAOImpl extends AbstractDAOImpl<Task> implements TaskDAO {
         log.info("Task search: Search for task with title " + title);
 
         Task task = null;
-        Session session = HibernateUtil.getSession();
         CriteriaBuilder builder = session.getCriteriaBuilder();
         CriteriaQuery<Task> criteria = builder.createQuery(Task.class);
         Root<Task> root = criteria.from(Task.class);
@@ -67,7 +64,6 @@ public class TaskDAOImpl extends AbstractDAOImpl<Task> implements TaskDAO {
         return task;
     }
 
-    @Loggable
     @Override
     public void completeTask(String userName, String taskTitle) {
         Session session = HibernateUtil.getSession();
@@ -78,7 +74,7 @@ public class TaskDAOImpl extends AbstractDAOImpl<Task> implements TaskDAO {
 
         session.beginTransaction();
         User user = userDAO.getUserByUserName(userName, session);
-        Task task = getTaskByTitle(taskTitle);
+        Task task = getTaskByTitle(taskTitle, session);
         Set<Task> userTasks = user.getTasks();
 
         if (Objects.isNull(task)) {

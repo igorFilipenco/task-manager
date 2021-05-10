@@ -110,8 +110,7 @@ public class TaskDAOImpl implements TaskDAO {
     }
 
     @Override
-    public Task getTaskByTitle(String title) {
-        //TODO write this method
+    public Task getTaskByTitle(String title, org.hibernate.Session session) {
         return null;
     }
 

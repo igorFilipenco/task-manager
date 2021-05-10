@@ -50,8 +50,6 @@ public class UserDAOImpl extends AbstractDAOImpl<User> implements UserDAO {
             log.info("User search: user with username " + userName + " not found");
         }
 
-        session.close();
-
         return user;
     }
 }

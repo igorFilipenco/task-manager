@@ -2,7 +2,9 @@ package com.stefanini.taskmanager.service;
 
 import com.stefanini.taskmanager.annotation.Loggable;
 import com.stefanini.taskmanager.dao.TaskDAO;
+import com.stefanini.taskmanager.dao.UserDAO;
 import com.stefanini.taskmanager.entity.Task;
+import com.stefanini.taskmanager.entity.User;
 import com.stefanini.taskmanager.utils.HibernateUtil;
 import com.stefanini.taskmanager.utils.ParamsExtractor;
 import org.apache.log4j.Logger;
@@ -15,9 +17,11 @@ import java.util.Objects;
 
 public class TaskServiceImpl implements TaskService {
     private static final Logger log = Logger.getLogger(TaskServiceImpl.class);
+    private final UserDAO userDAO;
     private final TaskDAO taskDAO;
 
-    public TaskServiceImpl(TaskDAO taskDAO) {
+    public TaskServiceImpl(TaskDAO taskDAO, UserDAO userDAO) {
+        this.userDAO = userDAO;
         this.taskDAO = taskDAO;
     }
 
@@ -70,11 +74,19 @@ public class TaskServiceImpl implements TaskService {
     @Override
     public Task getTaskByTitle(String[] args) {
         String taskTitle = ParamsExtractor.getParamFromArg(args, ParamsExtractor.TASK_TITLE_FLAG);
-        Task task = taskDAO.getTaskByTitle(taskTitle);
+        Task task = null;
 
-        if (Objects.isNull(task)) {
-            log.info("Task delete: task with title " + taskTitle + " does not exist");
-            return null;
+        try (Session session = getCurrentSession()) {
+            task = taskDAO.getTaskByTitle(taskTitle, session);
+
+            if (Objects.isNull(task)) {
+                log.info("Task delete: task with title " + taskTitle + " does not exist");
+                return null;
+            }
+        } catch (Exception e) {
+
+            log.error("Task search error: " + e.getMessage());
+
         }
 
         return task;
@@ -102,6 +114,29 @@ public class TaskServiceImpl implements TaskService {
         String userName = ParamsExtractor.getParamFromArg(args, ParamsExtractor.USERNAME_FLAG);
         String taskTitle = ParamsExtractor.getParamFromArg(args, ParamsExtractor.TASK_TITLE_FLAG);
         taskDAO.completeTask(userName, taskTitle);
+    }
+
+    @Loggable
+    @Override
+    public void assignTask(String[] args) {
+        String userName = ParamsExtractor.getParamFromArg(args, ParamsExtractor.USERNAME_FLAG);
+        Transaction transaction = null;
+
+        try (Session session = getCurrentSession()) {
+            User user = userDAO.getUserByUserName(userName, session);
+            Task task = getTaskByTitle(args);
+
+            transaction = session.beginTransaction();
+
+            taskDAO.assignTask(user, task, session);
+
+            session.getTransaction().commit();
+        } catch (Exception e) {
+            if (transaction != null) {
+                transaction.rollback();
+                log.error("Task assign error: " + e.getMessage());
+            }
+        }
     }
 
     @Loggable

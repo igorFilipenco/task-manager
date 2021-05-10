@@ -62,4 +62,8 @@ public class CommandExecutor {
     }
 
     public void createUserAndTask(String[] args) {createUserAndTask.execute(args);}
+
+    public void assignTask(String[] args) {
+        assignTask.execute(args);
+    }
 }

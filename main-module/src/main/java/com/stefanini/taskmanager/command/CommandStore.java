@@ -20,7 +20,7 @@ public class CommandStore {
         daoFactory = AbstractDAOFactory.createDAOFactory(FactoryType.HIBERNATE);
         UserDAO userDAO = daoFactory.getUserDAO();
         TaskDAO taskDAO = daoFactory.getTaskDAO();
-        taskService = new TaskServiceImpl(taskDAO);
+        taskService = new TaskServiceImpl(taskDAO, userDAO);
         userService = new UserServiceImpl(taskDAO, userDAO);
     }
 
@@ -57,6 +57,6 @@ public class CommandStore {
     }
 
     public void assignTask(String[] args) {
-        taskService.createTask(args);
+        taskService.assignTask(args);
     }
 }
